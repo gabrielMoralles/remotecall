@@ -4,8 +4,11 @@
  http://localhost:4200/user/2
  
 # In progress-
-option to create a public broadcast URL for the call as well. 
-
+* option to create a public broadcast URL for the call as well. 
+* Diagnostic check
+* Log file
+* Add call duration
+* close the call after a certain period.
 
 
 # Agora
