@@ -1,3 +1,13 @@
+# About
+ A simple side project app for video calling between two people. User can join with the links <br>
+ http://localhost:4200/user/1 <br>
+ http://localhost:4200/user/2
+ 
+# In progress-
+option to create a public broadcast URL for the call as well. 
+
+
+
 # Agora
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.3.
@@ -33,3 +43,5 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
       <pre >ng add dependencyName</pre>
       <pre >ng test</pre>
       <pre >ng build --prod</pre>
+      
+      
