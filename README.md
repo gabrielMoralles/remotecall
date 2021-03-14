@@ -1,4 +1,5 @@
 # About
+ A tutorial on building a WebRTC video  meeting rooms using WebRTC agora packages and Angular 11. <br>
  A simple side project app for video calling between two people. User can join with the links <br>
  http://localhost:4200/user/1 <br>
  http://localhost:4200/user/2
@@ -10,6 +11,9 @@
 * Add call duration
 * close the call after a certain period.
 
+
+# Topics
+angular webrtc video-conferencing agoraio agora-rtc-sdk-ng agora-rtm-sdk video 
 
 # Agora
 
