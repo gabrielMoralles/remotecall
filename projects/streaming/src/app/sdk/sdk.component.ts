@@ -12,23 +12,24 @@ import { StreamService } from '../services/stream.service';
 })
 export class SdkComponent implements OnInit {
   userName = '';
-  uid1 = 1234;
-  uid2 = 4321;
-  passUid = null;
-  passToken = '';
+  hideBtns =  true;
+  // uid1 = 1234;
+  // uid2 = 4321;
+  // passUid = null;
+  // passToken = '';
   printMessage = '';
 
   constructor(public stream: StreamService, public api: ApiService,
      public message: MessagingService, private route: ActivatedRoute) {
       this.route.params.subscribe(params => {
-        console.log(params);
-        if (params.id === "1") {
-          this.passUid = this.uid1;
-          this.passToken = "006b1a776384fe24b58a43030c834b8f7ddIAAnp5e+LfcM2hPrmOXCP35cOuVDYiAyOy40JhRZeEzoMaPg45sAAAAAEADhBocBgPNFYAEA6AMQsERg";
-        } else {
-          this.passUid = this.uid2;
-          this.passToken = "006b1a776384fe24b58a43030c834b8f7ddIADU8Oij7fBvT5ygwI8Uh9oAx8NP5bOkhSfHA8jfXrmqD2i/jsQAAAAAEAByVJMERPNFYAEA6APUr0Rg";
-        }
+        // console.log(params);
+        // if (params.id === "1") {
+        //   this.passUid = this.uid1;
+          // this.passToken = "006b1a776384fe24b58a43030c834b8f7ddIAD0N3czUoQxb85aZ01AtlVBCBQQfrm3v4S6sOYqPJSv/6Pg45sAAAAAEAASzyicfQFgYAEA6AMNvl5g";
+        // } else {
+        //   this.passUid = this.uid2;
+          // this.passToken = "006b1a776384fe24b58a43030c834b8f7ddIAD0N3czUoQxb85aZ01AtlVBCBQQfrm3v4S6sOYqPJSv/6Pg45sAAAAAEAASzyicfQFgYAEA6AMNvl5g";
+        // }
 
   })
 
@@ -53,12 +54,13 @@ export class SdkComponent implements OnInit {
 
   async startCall(){
     if (this.userName) {
-   const rtcDetails = await this.generateTokenAndUid(this.passUid);
-   await this.rtmUserLogin();
+  const uid = this.generateUid();
+   const rtcDetails = await this.generateTokenAndUid(uid);
+   await this.rtmUserLogin(uid);
     this.stream.createRTCClient();
    this.stream.agoraServerEvents(this.stream.rtc);
-   await this.stream.localUser(rtcDetails.token, this.passUid) ;
-
+   await this.stream.localUser(rtcDetails.token, uid) ;
+this.hideBtns = false;
   }
   else {
     alert('Enter name to start call');
@@ -76,6 +78,15 @@ export class SdkComponent implements OnInit {
 
    }
 
+   async generateRtmTokenAndUid(uid){
+    // https://sharp-pouncing-grass.glitch.me/rtmToken?account=1234
+     let url = 'https://sharp-pouncing-grass.glitch.me/rtmToken?';
+    //  let uid = this.generateUid();
+     const opts = { params: new HttpParams({fromString: "account="+uid}) };
+    const data = await this.api.getRequest(url, opts.params).toPromise();
+    return {'uid':  uid, token: data['key']}
+
+   }
 
 generateUid(){
   const length = 5;
@@ -84,14 +95,16 @@ generateUid(){
 }
 
 
-  async rtmUserLogin(){
+  async rtmUserLogin(uid){
 
 
 
    this.message.rtmclient = this.message.createRTMClient();
 
     this.message.channel = this.message.createRtmChannel(this.message.rtmclient);
-    await this.message.signalLogin(this.message.rtmclient, this.passToken, this.passUid.toString());
+   const rtmDetails = await this.generateRtmTokenAndUid(uid);
+
+    await this.message.signalLogin(this.message.rtmclient, rtmDetails.token, uid.toString());
     await this.message.joinchannel(this.message.channel);
     await this.message.setLocalAttributes(this.message.rtmclient, this.userName)
     this.message.RTMevents(this.message.rtmclient);

@@ -15,9 +15,13 @@
             </div>
           </div>
           <br>
-          <div class="ui buttons">
+          <div class="ui buttons" (click)="startCall()">
             <div class="or"></div>
-            <div id="join-btn" class="ui submit green button" (click)="startCall()">Start Call</div>
+            <button *ngIf="hideBtns">Start Call</button>
+            <button *ngIf="hideBtns">Camera On </button>
+            <button *ngIf="hideBtns">Camera Off </button>
+
+            <!-- <div id="join-btn" class="ui submit green button" (click)="startCall()">Start Call</div> -->
           </div>
         </div>
 
@@ -32,7 +36,7 @@
       height: 200px;"> -->
     <div id="local-player" class="player"></div>
 
-      <video id="local-video" class="ui large image"  autoplay></video>
+      <!-- <video id="local-video" class="ui large image"  autoplay></video> -->
       <p>{{userName}}</p>
       <h4 class="ui center aligned header" style="margin:0;">
         Local User

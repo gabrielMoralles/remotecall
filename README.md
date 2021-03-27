@@ -3,12 +3,19 @@
  http://localhost:4200/user/1 <br>
  http://localhost:4200/user/2
  
+ 
+# Basic-Video-Broadcasting
+Sample app to join/leave a channel. 
 # In progress-
 * option to create a public broadcast URL for the call as well. 
 * Diagnostic check
 * Log file
 * Add call duration
 * close the call after a certain period.
+* set the role as a host/audience, 
+* mute/unmute, 
+* switch between front/rear cameras, 
+* set the video parameters.
 
 
 # Agora
