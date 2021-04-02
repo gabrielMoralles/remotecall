@@ -100,7 +100,6 @@ console.log('MemberLeft',memberId );
   setCurrentMessage(newMessageData){
     console.log(newMessageData, 'setCurrentMessage');
 alert(newMessageData.message);
-// return newMessageData;
   }
 
 

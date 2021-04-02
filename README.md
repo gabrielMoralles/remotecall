@@ -1,9 +1,15 @@
 # About
  A tutorial on building a WebRTC video  meeting rooms using WebRTC agora packages and Angular 11. <br>
  A simple side project app for video calling between two people. User can join with the links <br>
+ If you are running project on local <br>
  http://localhost:4200/user/1 <br>
- http://localhost:4200/user/2
+ http://localhost:4200/user/2 <br>
  
+ Deployed version <br>
+https://agora-video-app.netlify.app/  // After opening this link click on user 1 <br>
+https://agora-video-app.netlify.app/ // After opening this link click on user 2
+
+
  
 # Basic-Video-Broadcasting
 Sample app to join/leave a channel. 

@@ -17,7 +17,7 @@ export class SdkComponent implements OnInit {
   // uid2 = 4321;
   // passUid = null;
   // passToken = '';
-  printMessage = '';
+  // printMessage = '';
 
   constructor(public stream: StreamService, public api: ApiService,
      public message: MessagingService, private route: ActivatedRoute) {

@@ -60,170 +60,170 @@ export class StreamService {
 
     }
 
-    stopAudio() {
-      this.rtc.localAudioTrack.stop();
-    }
+    // stopAudio() {
+    //   this.rtc.localAudioTrack.stop();
+    // }
 
 
-    clientProp() {
+    // clientProp() {
 
-      console.log(this.rtc.client.channelName, 'channelName');
+    //   console.log(this.rtc.client.channelName, 'channelName');
 
-      console.log(this.rtc.client.localTracks, 'localTracks');
+    //   console.log(this.rtc.client.localTracks, 'localTracks');
 
-      console.log(this.rtc.client.remoteUsers, 'remoteUsers');
-
-
-
-      console.log(this.rtc.client.uid, 'uid');
-
-      console.log(this.rtc.client.getListeners('ee'));
+    //   console.log(this.rtc.client.remoteUsers, 'remoteUsers');
 
 
 
-      const clientStats = this.rtc.client.getRTCStats();
+    //   console.log(this.rtc.client.uid, 'uid');
 
-      const clientStatsList = [
-
-        { description: "Number of users in channel", value: clientStats.UserCount, unit: "" },
-
-        { description: "Duration in channel", value: clientStats.Duration, unit: "s" },
-
-        { description: "Bit rate receiving", value: clientStats.RecvBitrate, unit: "bps" },
-
-        { description: "Bit rate being sent", value: clientStats.SendBitrate, unit: "bps" },
-
-        { description: "Total bytes received", value: clientStats.RecvBytes, unit: "bytes" },
-
-        { description: "Total bytes sent", value: clientStats.SendBytes, unit: "bytes" },
-
-        { description: "Outgoing available bandwidth", value: clientStats.OutgoingAvailableBandwidth.toFixed(3), unit: "kbps" },
-
-        { description: "RTT from SDK to SD-RTN access node", value: clientStats.RTT, unit: "ms" },
+    //   console.log(this.rtc.client.getListeners('ee'));
 
 
 
-      ]
-    }
+    //   const clientStats = this.rtc.client.getRTCStats();
 
-    trackProp() {
+    //   const clientStatsList = [
 
-      console.log(this.rtc.localAudioTrack.isPlaying, 'isPlaying');
+    //     { description: "Number of users in channel", value: clientStats.UserCount, unit: "" },
 
-      console.log(this.rtc.localAudioTrack.trackMediaType, 'trackMediaType');
+    //     { description: "Duration in channel", value: clientStats.Duration, unit: "s" },
 
-      console.log(this.rtc.localAudioTrack.getMediaStreamTrack(), 'getMediaStreamTrack()');
+    //     { description: "Bit rate receiving", value: clientStats.RecvBitrate, unit: "bps" },
 
+    //     { description: "Bit rate being sent", value: clientStats.SendBitrate, unit: "bps" },
 
+    //     { description: "Total bytes received", value: clientStats.RecvBytes, unit: "bytes" },
 
-      const localStats = { audio: this.rtc.localAudioTrack.getStats() };
+    //     { description: "Total bytes sent", value: clientStats.SendBytes, unit: "bytes" },
 
-      const localAudioStats = [{ description: "Send audio bit rate", value: localStats.audio.sendBitrate, unit: "bps" },
+    //     { description: "Outgoing available bandwidth", value: clientStats.OutgoingAvailableBandwidth.toFixed(3), unit: "kbps" },
 
-      { description: "Total audio bytes sent", value: localStats.audio.sendBytes, unit: "bytes" },
-
-      { description: "Total audio packets sent", value: localStats.audio.sendPackets, unit: "" },
-
-      { description: "Total audio packets loss", value: localStats.audio.sendPacketsLost, unit: "" }];
+    //     { description: "RTT from SDK to SD-RTN access node", value: clientStats.RTT, unit: "ms" },
 
 
 
-      console.log(this.rtc.localVideoTrack.getMediaStreamTrack(), 'localVideoTrack getMediaStreamTrack()');
+    //   ]
+    // }
+
+    // trackProp() {
+
+    //   console.log(this.rtc.localAudioTrack.isPlaying, 'isPlaying');
+
+    //   console.log(this.rtc.localAudioTrack.trackMediaType, 'trackMediaType');
+
+    //   console.log(this.rtc.localAudioTrack.getMediaStreamTrack(), 'getMediaStreamTrack()');
 
 
 
-      const localVideoStats = { video: this.rtc.localVideoTrack.getStats() };
+    //   const localStats = { audio: this.rtc.localAudioTrack.getStats() };
 
-      const localVideoData = [{ description: "Video capture resolution height", value: localVideoStats.video.captureResolutionHeight, unit: "" },
+    //   const localAudioStats = [{ description: "Send audio bit rate", value: localStats.audio.sendBitrate, unit: "bps" },
 
-      { description: "Video capture resolution width", value: localVideoStats.video.captureResolutionWidth, unit: "" },
+    //   { description: "Total audio bytes sent", value: localStats.audio.sendBytes, unit: "bytes" },
 
-      { description: "Video send resolution height", value: localVideoStats.video.sendResolutionHeight, unit: "" },
+    //   { description: "Total audio packets sent", value: localStats.audio.sendPackets, unit: "" },
 
-      { description: "Video send resolution width", value: localVideoStats.video.sendResolutionWidth, unit: "" },
-
-      { description: "video encode delay", value: Number(localVideoStats.video.encodeDelay).toFixed(2), unit: "ms" },
-
-      { description: "Send video bit rate", value: localVideoStats.video.sendBitrate, unit: "bps" },
-
-      { description: "Total video bytes sent", value: localVideoStats.video.sendBytes, unit: "bytes" },
-
-      { description: "Total video packets sent", value: localVideoStats.video.sendPackets, unit: "" },
-
-      { description: "Total video packets loss", value: localVideoStats.video.sendPacketsLost, unit: "" },
-
-      { description: "Video duration", value: localVideoStats.video.totalDuration, unit: "s" },
+    //   { description: "Total audio packets loss", value: localStats.audio.sendPacketsLost, unit: "" }];
 
 
 
-      { description: "Total video freeze time", value: localVideoStats.video.totalFreezeTime, unit: "s" }]
+    //   console.log(this.rtc.localVideoTrack.getMediaStreamTrack(), 'localVideoTrack getMediaStreamTrack()');
 
 
-    }
+
+    //   const localVideoStats = { video: this.rtc.localVideoTrack.getStats() };
+
+    //   const localVideoData = [{ description: "Video capture resolution height", value: localVideoStats.video.captureResolutionHeight, unit: "" },
+
+    //   { description: "Video capture resolution width", value: localVideoStats.video.captureResolutionWidth, unit: "" },
+
+    //   { description: "Video send resolution height", value: localVideoStats.video.sendResolutionHeight, unit: "" },
+
+    //   { description: "Video send resolution width", value: localVideoStats.video.sendResolutionWidth, unit: "" },
+
+    //   { description: "video encode delay", value: Number(localVideoStats.video.encodeDelay).toFixed(2), unit: "ms" },
+
+    //   { description: "Send video bit rate", value: localVideoStats.video.sendBitrate, unit: "bps" },
+
+    //   { description: "Total video bytes sent", value: localVideoStats.video.sendBytes, unit: "bytes" },
+
+    //   { description: "Total video packets sent", value: localVideoStats.video.sendPackets, unit: "" },
+
+    //   { description: "Total video packets loss", value: localVideoStats.video.sendPacketsLost, unit: "" },
+
+    //   { description: "Video duration", value: localVideoStats.video.totalDuration, unit: "s" },
+
+
+
+    //   { description: "Total video freeze time", value: localVideoStats.video.totalFreezeTime, unit: "s" }]
+
+
+    // }
     // To temporary off the video
 
-    async videoOff() {
+    // async videoOff() {
 
-      this.rtc.localVideoTrack.setEnabled(false);
+    //   this.rtc.localVideoTrack.setEnabled(false);
 
-    }
+    // }
     // To on the video
 
-    videoOn() {
+    // videoOn() {
 
-      this.rtc.localVideoTrack.setEnabled(true);
-
-
-    }
-    async audioVideo() {
-      // To Capture and audio and video at one time
+    //   this.rtc.localVideoTrack.setEnabled(true);
 
 
+    // }
+    // async audioVideo() {
+    //   // To Capture and audio and video at one time
 
-      const [microphoneTrack, cameraTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
 
-    }
 
-    async closeTrackTemp() {
-      await this.rtc.client.unpublish(this.rtc.localVideoTrack);
-    }
+    //   const [microphoneTrack, cameraTrack] = await AgoraRTC.createMicrophoneAndCameraTracks();
+
+    // }
+
+    // async closeTrackTemp() {
+    //   await this.rtc.client.unpublish(this.rtc.localVideoTrack);
+    // }
 
     // Other way to set video quality
 
-    setVideoQuality() {
+    // setVideoQuality() {
 
-      this.rtc.localVideoTrack.setEncoderConfiguration("480p_1")
-    }
+    //   this.rtc.localVideoTrack.setEncoderConfiguration("480p_1")
+    // }
 
-    async shareScreen() {
+    // async shareScreen() {
 
-      await AgoraRTC.createScreenVideoTrack({
+    //   await AgoraRTC.createScreenVideoTrack({
 
-        encoderConfig: "1080p_1",   // Set the encoder configurations. encoderConfig- defines image quality and resolution. It is optional field.
+    //     encoderConfig: "1080p_1",   // Set the encoder configurations. encoderConfig- defines image quality and resolution. It is optional field.
 
-      }).then(localScreenTrack => {
+    //   }).then(localScreenTrack => {
 
-        // publish the tracks here
+    //     // publish the tracks here
 
-      });
+    //   });
 
-    }
+    // }
 
     // To play any default audio
 
-    async playAudio() {
+    // async playAudio() {
 
-      const audioFileTrack = await AgoraRTC.createBufferSourceAudioTrack({
+    //   const audioFileTrack = await AgoraRTC.createBufferSourceAudioTrack({
 
-        source: "https://web-demos-static.agora.io/agora/smlt.flac",
+    //     source: "https://web-demos-static.agora.io/agora/smlt.flac",
 
-      });
+    //   });
 
-      audioFileTrack.startProcessAudioBuffer();     // Read the audio file before playback
+    //   audioFileTrack.startProcessAudioBuffer();     // Read the audio file before playback
 
-      audioFileTrack.play();
+    //   audioFileTrack.play();
 
-    }
+    // }
     // events to handle remote users
 
     agoraServerEvents(rtc) {
@@ -307,19 +307,19 @@ export class StreamService {
     }
 
     // To switch camera-
-    async switchCamera(label, localTracks) {
-      let cams = await AgoraRTC.getCameras(); //  all cameras devices you can use
-      let currentCam = cams.find(cam => cam.label === label);
-      await localTracks.videoTrack.setDevice(currentCam.deviceId);
-    }
+    // async switchCamera(label, localTracks) {
+    //   let cams = await AgoraRTC.getCameras(); //  all cameras devices you can use
+    //   let currentCam = cams.find(cam => cam.label === label);
+    //   await localTracks.videoTrack.setDevice(currentCam.deviceId);
+    // }
 
     // To switch audio-
 
-    async switchMicrophone(label, localTracks) {
-      let mics = await AgoraRTC.getMicrophones(); // all microphones devices you can use
-      let currentMic = mics.find(mic => mic.label === label);
-      await localTracks.audioTrack.setDevice(currentMic.deviceId);
-    }
+    // async switchMicrophone(label, localTracks) {
+    //   let mics = await AgoraRTC.getMicrophones(); // all microphones devices you can use
+    //   let currentMic = mics.find(mic => mic.label === label);
+    //   await localTracks.audioTrack.setDevice(currentMic.deviceId);
+    // }
 
     // To leave channel-
 
