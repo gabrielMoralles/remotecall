@@ -113,7 +113,7 @@ generateUid(){
   }
 
    peertopeer(){
-this.message.sendOneToOneMessage( this.message.rtmclient)
+this.message.sendOneToOneMessage( this.message.rtmclient, this.stream.remoteUsers[0].uid.toString())
    }
 
    channelMsg(){

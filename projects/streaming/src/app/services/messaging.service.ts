@@ -87,7 +87,7 @@ console.log('MemberLeft',memberId );
 
          });
   }
-
+  // used to handle channel message
   async handleMessageReceived(text: RtmMessage, senderId: string, messagePros, client: RtmClient) {
     const user = await client.getUserAttributes(senderId); // senderId means uid getUserInfo
     console.log(text, senderId, messagePros, user, 'channelmsg');
@@ -103,11 +103,11 @@ alert(newMessageData.message);
   }
 
 
-  sendOneToOneMessage(client: RtmClient) {
+  sendOneToOneMessage(client: RtmClient, uid) {
     client
       .sendMessageToPeer(
         { text: "test peer message" }, // An RtmMessage object.
-        "1234" // The user ID of the remote user.
+        uid // The user ID of the remote user.
       )
       .then(sendResult => {
         if (sendResult.hasPeerReceived) {
@@ -145,9 +145,9 @@ alert(newMessageData.message);
     });
   }
 
-  async addUpdateUserAttribute(client: RtmClient, attribute) {
-    await client.addOrUpdateLocalUserAttributes(attribute);
-  }
+  // async addUpdateUserAttribute(client: RtmClient, attribute) {
+  //   await client.addOrUpdateLocalUserAttributes(attribute);
+  // }
 
 
   sendMessageChannel(channel: RtmChannel) {
