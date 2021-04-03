@@ -13,26 +13,9 @@ import { StreamService } from '../services/stream.service';
 export class SdkComponent implements OnInit {
   userName = '';
   hideBtns =  true;
-  // uid1 = 1234;
-  // uid2 = 4321;
-  // passUid = null;
-  // passToken = '';
-  // printMessage = '';
 
   constructor(public stream: StreamService, public api: ApiService,
      public message: MessagingService, private route: ActivatedRoute) {
-      this.route.params.subscribe(params => {
-        // console.log(params);
-        // if (params.id === "1") {
-        //   this.passUid = this.uid1;
-          // this.passToken = "006b1a776384fe24b58a43030c834b8f7ddIAD0N3czUoQxb85aZ01AtlVBCBQQfrm3v4S6sOYqPJSv/6Pg45sAAAAAEAASzyicfQFgYAEA6AMNvl5g";
-        // } else {
-        //   this.passUid = this.uid2;
-          // this.passToken = "006b1a776384fe24b58a43030c834b8f7ddIAD0N3czUoQxb85aZ01AtlVBCBQQfrm3v4S6sOYqPJSv/6Pg45sAAAAAEAASzyicfQFgYAEA6AMNvl5g";
-        // }
-
-  })
-
  this.stream.updateUserInfo.subscribe(async (id) => {
  if (id) {
   const user = await this.message.rtmclient.getUserAttributes(id.toString()); // senderId means uid getUserInfo
@@ -71,7 +54,6 @@ this.hideBtns = false;
    async generateTokenAndUid(uid){
     // https://test-agora.herokuapp.com/access_token?channel=test&uid=1234
      let url = 'https://test-agora.herokuapp.com/access_token?';
-    //  let uid = this.generateUid();
      const opts = { params: new HttpParams({fromString: "channel=test&uid="+uid}) };
     const data = await this.api.getRequest(url, opts.params).toPromise();
     return {'uid':  uid, token: data['token']}
@@ -81,7 +63,6 @@ this.hideBtns = false;
    async generateRtmTokenAndUid(uid){
     // https://sharp-pouncing-grass.glitch.me/rtmToken?account=1234
      let url = 'https://sharp-pouncing-grass.glitch.me/rtmToken?';
-    //  let uid = this.generateUid();
      const opts = { params: new HttpParams({fromString: "account="+uid}) };
     const data = await this.api.getRequest(url, opts.params).toPromise();
     return {'uid':  uid, token: data['key']}
