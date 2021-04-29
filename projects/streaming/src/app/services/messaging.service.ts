@@ -54,23 +54,6 @@ export class MessagingService {
     }
   }
 
-  // getRTMUserStatus(client: RtmClient, uidArray) {
-
-  //   client.subscribePeersOnlineStatus(uidArray).then(() => {
-  //     console.log('subscribeStatus');
-  //   }).catch(err => {
-  //     console.log('subscribeStatus failure', err);
-  //   });
-
-  // }
-
-  // async getRTMUserOnlineStatus(client: RtmClient, uids) {
-  //   const status = await client.queryPeersOnlineStatus(uids)
-
-
-  // }
-
-
   receiveChannelMessage(channel: RtmChannel, client: RtmClient) {
     channel.on('ChannelMessage', (text, senderId, messagePros) => { // text: text of the received channel message; senderId: user ID of the sender.
       /* Your code for handling events, such as receiving a channel message. */
@@ -182,6 +165,23 @@ export class MessagingService {
 
   // getChannelAttributes(client: RtmClient, channel) {
   //   const res = client.getChannelAttributes(channel)
+  // }
+
+
+  // getRTMUserStatus(client: RtmClient, uidArray) {
+
+  //   client.subscribePeersOnlineStatus(uidArray).then(() => {
+  //     console.log('subscribeStatus');
+  //   }).catch(err => {
+  //     console.log('subscribeStatus failure', err);
+  //   });
+
+  // }
+
+  // async getRTMUserOnlineStatus(client: RtmClient, uids) {
+  //   const status = await client.queryPeersOnlineStatus(uids)
+
+
   // }
 
 }

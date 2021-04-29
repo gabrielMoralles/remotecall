@@ -33,7 +33,7 @@ export class StreamService {
     await localTracks.setDevice(currentCam.deviceId);
   }
 
-  // To join a call with tracks
+  // To join a call with tracks (video or audio)
   async localUser(token, uuid) {
     const uid = await this.rtc.client.join(this.options.appId, this.options.channel,
       token, uuid);
