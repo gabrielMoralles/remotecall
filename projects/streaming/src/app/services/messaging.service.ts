@@ -11,9 +11,9 @@ export class MessagingService {
   rtmToken;
   constructor() { }
 
-  // appid
+  // pass your appid in createInstance
   createRTMClient() {
-    const client = AgoraRTM.createInstance('b1a776384fe24b58a43030c834b8f7dd');
+    const client = AgoraRTM.createInstance('');
     return client;
   }
 
