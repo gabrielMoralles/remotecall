@@ -11,6 +11,8 @@ https://agora-video-app.netlify.app/ // After opening this link click on user 2
 
 
  
+For APPID create an app on below site
+https://console.agora.io/
 # Basic-Video-Broadcasting
 Sample app to join/leave a channel. 
 # In progress-

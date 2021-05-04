@@ -27,6 +27,7 @@ export class StreamService {
     this.rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
     // this.rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" , role: 'audience'});
   }
+  // comment it if you don't want virtual camera
   async switchCamera(label, localTracks) {
     let cams = await AgoraRTC.getCameras(); //  all cameras devices you can use
     let currentCam = cams.find(cam => cam.label === label);
@@ -43,6 +44,7 @@ export class StreamService {
     this.rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack({
       encoderConfig: "120p",
     });
+    // comment it if you want to use your camera
     this.switchCamera('OBS Virtual Camera', this.rtc.localVideoTrack)
     // Publish the local audio and video tracks to the channel.
     // this.rtc.localAudioTrack.play();
@@ -52,6 +54,7 @@ export class StreamService {
   }
 
   agoraServerEvents(rtc) {
+    // 2 used
     rtc.client.on("user-published", async (user, mediaType) => {
       console.log(user, mediaType, 'user-published');
 
@@ -71,6 +74,8 @@ export class StreamService {
     rtc.client.on("connection-state-change", (curState, prevState) => {
       console.log("current", curState, "prev", prevState, 'event');
     });
+
+    // 1 used
     rtc.client.on("user-joined", (user) => {
       let id = user.uid;
       this.remoteUsers.push({ 'uid': +id });
