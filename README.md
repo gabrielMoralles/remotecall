@@ -30,6 +30,7 @@ Sample app to join/leave a channel.
 * set the video parameters.
 
 
+Todo- show the audio status (Mute/Unmute) and video status (yes/no) of every attendee in the video call.
 # Topics
 angular webrtc video-conferencing agoraio agora-rtc-sdk-ng agora-rtm-sdk video 
 
