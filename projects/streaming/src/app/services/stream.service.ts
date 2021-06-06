@@ -13,7 +13,7 @@ export class StreamService {
     localVideoTrack: null,
   };
   options = {
-    appId: "",  // set your appid here
+    appId: "b1a776384fe24b58a43030c834b8f7dd",  // set your appid here
     channel: "test", // Set the channel name.
     // token: '', // Pass a token if your project enables the App Certificate.
     // uid: null
@@ -161,55 +161,58 @@ export class StreamService {
   //   this.rtc.localAudioTrack.stop();
   // }
 
-  // clientProp() {
-  //   console.log(this.rtc.client.channelName, 'channelName');
-  //   console.log(this.rtc.client.localTracks, 'localTracks');
-  //   console.log(this.rtc.client.remoteUsers, 'remoteUsers');
+  clientProp() {
+    console.log(this.rtc.client.channelName, 'channelName');
+    console.log(this.rtc.client.localTracks, 'localTracks');
+    console.log(this.rtc.client.remoteUsers, 'remoteUsers');
 
-  //   console.log(this.rtc.client.uid, 'uid');
-  //   console.log(this.rtc.client.getListeners('ee'));
+    console.log(this.rtc.client.uid, 'uid');
+    // console.log(this.rtc.client.getListeners('ee'));
 
-  //   const clientStats = this.rtc.client.getRTCStats();
-  //   const clientStatsList = [
-  //     { description: "Number of users in channel", value: clientStats.UserCount, unit: "" },
-  //     { description: "Duration in channel", value: clientStats.Duration, unit: "s" },
-  //     { description: "Bit rate receiving", value: clientStats.RecvBitrate, unit: "bps" },
-  //     { description: "Bit rate being sent", value: clientStats.SendBitrate, unit: "bps" },
-  //     { description: "Total bytes received", value: clientStats.RecvBytes, unit: "bytes" },
-  //     { description: "Total bytes sent", value: clientStats.SendBytes, unit: "bytes" },
-  //     { description: "Outgoing available bandwidth", value: clientStats.OutgoingAvailableBandwidth.toFixed(3), unit: "kbps" },
-  //     { description: "RTT from SDK to SD-RTN access node", value: clientStats.RTT, unit: "ms" },
+    const clientStats = this.rtc.client.getRTCStats();
+    const clientStatsList = [
+      { description: "Number of users in channel", value: clientStats.UserCount, unit: "" },
+      { description: "Duration in channel", value: clientStats.Duration, unit: "s" },
+      { description: "Bit rate receiving", value: clientStats.RecvBitrate, unit: "bps" },
+      { description: "Bit rate being sent", value: clientStats.SendBitrate, unit: "bps" },
+      { description: "Total bytes received", value: clientStats.RecvBytes, unit: "bytes" },
+      { description: "Total bytes sent", value: clientStats.SendBytes, unit: "bytes" },
+      { description: "Outgoing available bandwidth", value: clientStats.OutgoingAvailableBandwidth.toFixed(3), unit: "kbps" },
+      { description: "RTT from SDK to SD-RTN access node", value: clientStats.RTT, unit: "ms" },
 
-  //   ]
-  // }
-  // trackProp() {
-  //   console.log(this.rtc.localAudioTrack.isPlaying, 'isPlaying');
-  //   console.log(this.rtc.localAudioTrack.trackMediaType, 'trackMediaType');
-  //   console.log(this.rtc.localAudioTrack.getMediaStreamTrack(), 'getMediaStreamTrack()');
+    ]
+    console.log(clientStatsList, 'clientStatsList');
 
-  //   const localStats = { audio: this.rtc.localAudioTrack.getStats() };
-  //   const localAudioStats = [{ description: "Send audio bit rate", value: localStats.audio.sendBitrate, unit: "bps" },
-  //   { description: "Total audio bytes sent", value: localStats.audio.sendBytes, unit: "bytes" },
-  //   { description: "Total audio packets sent", value: localStats.audio.sendPackets, unit: "" },
-  //   { description: "Total audio packets loss", value: localStats.audio.sendPacketsLost, unit: "" }];
+  }
+  trackProp() {
+    console.log(this.rtc.localAudioTrack.isPlaying, 'isPlaying');
+    console.log(this.rtc.localAudioTrack.trackMediaType, 'trackMediaType');
+    console.log(this.rtc.localAudioTrack.getMediaStreamTrack(), 'getMediaStreamTrack()');
 
-  //   console.log(this.rtc.localVideoTrack.getMediaStreamTrack(), 'localVideoTrack getMediaStreamTrack()');
+    const localStats = { audio: this.rtc.localAudioTrack.getStats() };
+    const localAudioStats = [{ description: "Send audio bit rate", value: localStats.audio.sendBitrate, unit: "bps" },
+    { description: "Total audio bytes sent", value: localStats.audio.sendBytes, unit: "bytes" },
+    { description: "Total audio packets sent", value: localStats.audio.sendPackets, unit: "" },
+    { description: "Total audio packets loss", value: localStats.audio.sendPacketsLost, unit: "" }];
 
-  //   const localVideoStats = { video: this.rtc.localVideoTrack.getStats() };
-  //   const localVideoData = [{ description: "Video capture resolution height", value: localVideoStats.video.captureResolutionHeight, unit: "" },
-  //   { description: "Video capture resolution width", value: localVideoStats.video.captureResolutionWidth, unit: "" },
-  //   { description: "Video send resolution height", value: localVideoStats.video.sendResolutionHeight, unit: "" },
-  //   { description: "Video send resolution width", value: localVideoStats.video.sendResolutionWidth, unit: "" },
-  //   { description: "video encode delay", value: Number(localVideoStats.video.encodeDelay).toFixed(2), unit: "ms" },
-  //   { description: "Send video bit rate", value: localVideoStats.video.sendBitrate, unit: "bps" },
-  //   { description: "Total video bytes sent", value: localVideoStats.video.sendBytes, unit: "bytes" },
-  //   { description: "Total video packets sent", value: localVideoStats.video.sendPackets, unit: "" },
-  //   { description: "Total video packets loss", value: localVideoStats.video.sendPacketsLost, unit: "" },
-  //   { description: "Video duration", value: localVideoStats.video.totalDuration, unit: "s" },
+    console.log(localAudioStats, 'localAudioStats');
 
-  //   { description: "Total video freeze time", value: localVideoStats.video.totalFreezeTime, unit: "s" }]
+    const localVideoStats = { video: this.rtc.localVideoTrack.getStats() };
+    const localVideoData = [{ description: "Video capture resolution height", value: localVideoStats.video.captureResolutionHeight, unit: "" },
+    { description: "Video capture resolution width", value: localVideoStats.video.captureResolutionWidth, unit: "" },
+    { description: "Video send resolution height", value: localVideoStats.video.sendResolutionHeight, unit: "" },
+    { description: "Video send resolution width", value: localVideoStats.video.sendResolutionWidth, unit: "" },
+    { description: "video encode delay", value: Number(localVideoStats.video.encodeDelay).toFixed(2), unit: "ms" },
+    { description: "Send video bit rate", value: localVideoStats.video.sendBitrate, unit: "bps" },
+    { description: "Total video bytes sent", value: localVideoStats.video.sendBytes, unit: "bytes" },
+    { description: "Total video packets sent", value: localVideoStats.video.sendPackets, unit: "" },
+    { description: "Total video packets loss", value: localVideoStats.video.sendPacketsLost, unit: "" },
+    { description: "Video duration", value: localVideoStats.video.totalDuration, unit: "s" },
 
-  // }
+    { description: "Total video freeze time", value: localVideoStats.video.totalFreezeTime, unit: "s" }]
+    console.log(localVideoData, 'localVideoData');
+
+  }
   // To temporary off the video
   // async videoOff() {
   //   this.rtc.localVideoTrack.setEnabled(false);
