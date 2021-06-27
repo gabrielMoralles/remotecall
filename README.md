@@ -71,3 +71,5 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
       <pre >ng build --prod</pre>
       
       
+      Video App conferencing tool using Angular framework
+
