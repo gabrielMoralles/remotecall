@@ -123,8 +123,10 @@ export class MessagingService {
   }
 
   async setLocalAttributes(client: RtmClient, name) {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent).toString();
+    console.log(isMobile, 'isMobile');
     await client.setLocalUserAttributes({
-      name
+      name, isMobile
     });
   }
 

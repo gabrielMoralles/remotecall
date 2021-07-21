@@ -45,7 +45,7 @@ export class StreamService {
       encoderConfig: "120p",
     });
     // comment it if you want to use your camera
-    this.switchCamera('OBS Virtual Camera', this.rtc.localVideoTrack)
+    // this.switchCamera('OBS Virtual Camera', this.rtc.localVideoTrack)
     // Publish the local audio and video tracks to the channel.
     // this.rtc.localAudioTrack.play();
     this.rtc.localVideoTrack.play("local-player");
