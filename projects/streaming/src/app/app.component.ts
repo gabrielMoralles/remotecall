@@ -1,3 +1,4 @@
+import { CommonService } from './services/common.service';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -9,11 +10,12 @@ import { Router } from '@angular/router';
 export class AppComponent {
   title = 'streaming';
   hide = true;
-  constructor(private router: Router){
+  constructor(private router: Router, public common: CommonService){
 
   }
   open(value){
-    this.router.navigate([`/user/${value}`]);
+this.common.id = value;
+    this.router.navigate([`/staging/${value}`]);
     this.hide = false;
 
   }

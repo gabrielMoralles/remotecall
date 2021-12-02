@@ -3,28 +3,7 @@
   <h1 class="ui header">Simple Agora Video App</h1>
   <hr>
   <div class="ui two column stackable grid">
-    <div class="ui ten wide column">
-      <div class="ui segment">
 
-        <!-- Chat Room Form -->
-        <div class="ui form">
-          <div class="fields">
-            <div class="field">
-              <label>User Name</label>
-              <input autocomplete="off" type="text" placeholder="Enter user name" id="username" name="username" [(ngModel)]="userName">
-            </div>
-          </div>
-          <br>
-          <div class="ui buttons" (click)="startCall()">
-            <div class="or"></div>
-            <button *ngIf="hideBtns">Start Call</button>
-          </div>
-        </div>
-
-        <!-- Chat Room Messages -->
-        <div id="chat"></div>
-      </div>
-    </div>
 
     <!-- Local user Camera -->
     <div class="ui six wide column">

@@ -1,3 +1,4 @@
+import { CommonService } from './common.service';
 import { Injectable } from '@angular/core';
 
 import AgoraRTM, { RtmChannel, RtmClient, RtmMessage } from "agora-rtm-sdk";
@@ -9,11 +10,11 @@ export class MessagingService {
   rtmclient: RtmClient;
   channel: RtmChannel;
   rtmToken;
-  constructor() { }
+  constructor(private common: CommonService) { }
 
   // pass your appid in createInstance
   createRTMClient() {
-    const client = AgoraRTM.createInstance('');
+    const client = AgoraRTM.createInstance('48b158ccc64343cf9973a8f5df311f2a');
     return client;
   }
 
@@ -75,8 +76,14 @@ export class MessagingService {
     const user = await client.getUserAttributes(senderId); // senderId means uid getUserInfo
     console.log(text, senderId, messagePros, user, 'channelmsg');
     if (text.messageType === "TEXT") {
-      const newMessageData = { user, message: text.text };
-      this.setCurrentMessage(newMessageData);
+      if (text.text == "ping") {
+        this.common.pongUserInfo(senderId);
+
+      } else {
+        const newMessageData = { user, message: text.text };
+        this.setCurrentMessage(newMessageData);
+      }
+
     }
   }
 
@@ -130,9 +137,9 @@ export class MessagingService {
     });
   }
 
-  sendMessageChannel(channel: RtmChannel) {
+  sendMessageChannel(channel: RtmChannel, message) {
     channel
-      .sendMessage({ text: "test channel message" })
+      .sendMessage({ text: message })
       .then(() => {
         /* Your code for handling events, such as a channel message-send success. */
         console.log("test");
@@ -154,6 +161,24 @@ export class MessagingService {
     }
   }
 
+  rtmChannelSendMessage(action)
+  {
+    // console.log('rtmChannelSendMessage', action);
+
+    let msg;
+    switch(action)
+    {
+
+      case 'ping':
+        msg=JSON.stringify({"action":"ping"});
+        //console.log('Ping');
+      break;
+
+    }
+
+    return msg;
+
+  }
   // async addUpdateUserAttribute(client: RtmClient, attribute) {
   //   await client.addOrUpdateLocalUserAttributes(attribute);
   // }
