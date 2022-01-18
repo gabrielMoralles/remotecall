@@ -6,12 +6,14 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SdkComponent } from './sdk/sdk.component';
 import { StagingComponent } from './staging/staging.component';
+import { GenerateTokenComponent } from './generate-token/generate-token.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SdkComponent,
-    StagingComponent
+    StagingComponent,
+    GenerateTokenComponent
   ],
   imports: [
     BrowserModule,

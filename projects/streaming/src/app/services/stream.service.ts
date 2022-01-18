@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import AgoraRTC, { IAgoraRTCClient, LiveStreamingTranscodingConfig, ICameraVideoTrack, IMicrophoneAudioTrack, ScreenVideoTrackInitConfig, VideoEncoderConfiguration, AREAS, IRemoteAudioTrack, ClientRole } from "agora-rtc-sdk-ng"
 import { BehaviorSubject } from 'rxjs';
+import { CommonService } from './common.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,6 +13,16 @@ export class StreamService {
     localAudioTrack: null,
     localVideoTrack: null,
   };
+  rtcscreenshare = {
+    // For the local client.
+    client: null,
+    // For the local audio and video tracks.
+    localAudioTrack: null,
+    localVideoTrack: null,
+    localScreenTrack: null,
+    uid: null
+  };
+
   options = {
     appId: "48b158ccc64343cf9973a8f5df311f2a",  // set your appid here
     channel: "test", // Set the channel name.
@@ -20,11 +31,17 @@ export class StreamService {
   };
   remoteUsers: IUser[] = [];       // To add remote users in list
   updateUserInfo = new BehaviorSubject<any>(null); // to update remote users name
+  isScreenShared = false;
+  presentingId= 0;
 
   constructor() { }
-
+  // private common: CommonService
   createRTCClient() {
-    this.rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
+    //  return AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
+    return AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+// create client instances for camera (client) and screen share (screenClient)
+// var client = AgoraRTC.createClient({mode: 'rtc', codec: "h264"}); // h264 better detail at a higher motion
+// var screenClient = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'}); // use the vp8 for better detail in low motion
     // this.rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" , role: 'audience'});
   }
   // comment it if you don't want virtual camera
@@ -53,12 +70,45 @@ export class StreamService {
     await this.rtc.client.publish([this.rtc.localAudioTrack, this.rtc.localVideoTrack]);
   }
 
-  agoraServerEvents(rtc) {
+  async fqs ( f) {
+    try {
+      this.rtcscreenshare.localScreenTrack = await this.playStream();
+
+      const uid = await this.rtcscreenshare.client.join(this.options.appId, this.options.channel,
+        f.t, f.uid);
+      this.rtcscreenshare.uid = uid;
+ 
+      await this.rtcscreenshare.client.publish(this.rtcscreenshare.localScreenTrack);
+      setTimeout(() => {
+        this.rtcscreenshare.localScreenTrack.play('screens', { fit: "cover" });
+
+      }, 1000);
+ 
+    } catch (e) {
+      console.log('throwerror', e);
+      return;
+    }
+  }
+
+  
+  async playStream() {
+    // Set the encoder configurations. encoderConfig- defines image quality and resolution. It is optional field.
+    const localScreenTrack = await AgoraRTC.createScreenVideoTrack({
+      encoderConfig: "1080p_1",
+    });
+    return localScreenTrack;
+  }
+  agoraServerEvents(rtc, uid1?, uid2?) {
     // 2 used
     rtc.client.on("user-published", async (user, mediaType) => {
       console.log(user, mediaType, 'user-published');
 
       await rtc.client.subscribe(user, mediaType);
+      let id = user.uid;
+
+      if (uid1 != id && this.rtcscreenshare.uid != id && uid2 != id ) {
+      console.log(this.isScreenShared, 'isScreenShared');
+
       if (mediaType === "video") {
         const remoteVideoTrack = user.videoTrack;
         remoteVideoTrack.play('remote-playerlist' + user.uid);
@@ -67,6 +117,7 @@ export class StreamService {
         const remoteAudioTrack = user.audioTrack;
         remoteAudioTrack.play();
       }
+    }
     });
     rtc.client.on("user-unpublished", user => {
       console.log(user, 'user-unpublished');
@@ -78,8 +129,11 @@ export class StreamService {
     // 1 used
     rtc.client.on("user-joined", (user) => {
       let id = user.uid;
+      if (uid1 != id && this.rtcscreenshare.uid != id && uid2 != id ) {
+
       this.remoteUsers.push({ 'uid': +id });
       this.updateUserInfo.next(id);
+      }
       console.log("user-joined", user, this.remoteUsers, 'event1');
     });
     rtc.client.on("channel-media-relay-event", (user) => {
@@ -134,16 +188,16 @@ export class StreamService {
   // To leave channel-
   async leaveCall() {
     // Destroy the local audio and video tracks.
-    this.rtc.localAudioTrack.close();
-    this.rtc.localVideoTrack.close();
+    this.rtc.localAudioTrack!= undefined ?? this.rtc.localAudioTrack.close();
+    this.rtc.localVideoTrack!=undefined ?? this.rtc.localVideoTrack.close();
     // Traverse all remote users.
-    this.rtc.client.remoteUsers.forEach(user => {
+    this.rtc.client!=undefined ?? this.rtc.client.remoteUsers.forEach(user => {
       // Destroy the dynamically created DIV container.
       const playerContainer = document.getElementById('remote-playerlist' + user.uid.toString());
       playerContainer && playerContainer.remove();
     });
     // Leave the channel.
-    await this.rtc.client.leave();
+    await this.rtc.client!=undefined ?? this.rtc.client.leave();
     // for (trackName in localTracks) {
     //   var track = localTracks[trackName];
     //   if(track) {
@@ -167,7 +221,7 @@ export class StreamService {
     console.log(this.rtc.client.remoteUsers, 'remoteUsers');
 
     console.log(this.rtc.client.uid, 'uid');
-    // console.log(this.rtc.client.getListeners('ee'));
+    console.log(this.rtc.client.getListeners('ee'));
 
     const clientStats = this.rtc.client.getRTCStats();
     const clientStatsList = [
@@ -234,13 +288,7 @@ export class StreamService {
   // setVideoQuality() {
   //   this.rtc.localVideoTrack.setEncoderConfiguration("480p_1")
   // }
-  // async shareScreen() {
-  //   await AgoraRTC.createScreenVideoTrack({
-  //     encoderConfig: "1080p_1",   // Set the encoder configurations. encoderConfig- defines image quality and resolution. It is optional field.
-  //   }).then(localScreenTrack => {
-  //     // publish the tracks here
-  //   });
-  // }
+
   // To play any default audio
   // async playAudio() {
   //   const audioFileTrack = await AgoraRTC.createBufferSourceAudioTrack({
@@ -251,18 +299,23 @@ export class StreamService {
   // }
   // events to handle remote users
 
-  // To switch camera-
-  // async switchCamera(label, localTracks) {
-  //   let cams = await AgoraRTC.getCameras(); //  all cameras devices you can use
-  //   let currentCam = cams.find(cam => cam.label === label);
-  //   await localTracks.videoTrack.setDevice(currentCam.deviceId);
-  // }
+
   // To switch audio-
   // async switchMicrophone(label, localTracks) {
   //   let mics = await AgoraRTC.getMicrophones(); // all microphones devices you can use
   //   let currentMic = mics.find(mic => mic.label === label);
   //   await localTracks.audioTrack.setDevice(currentMic.deviceId);
   // }
+
+    //Set Role
+    async setRole(client, role: ClientRole) {
+      try {
+        await client.setClientRole(role);
+      } catch (error) {
+        console.log(error, 'setRole error');
+      }
+  
+    }
 
 }
 export interface IUser {

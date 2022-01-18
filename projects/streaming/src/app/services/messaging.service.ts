@@ -89,7 +89,6 @@ export class MessagingService {
 
   setCurrentMessage(newMessageData) {
     console.log(newMessageData, 'setCurrentMessage');
-    alert(newMessageData.message);
   }
 
 
@@ -129,7 +128,7 @@ export class MessagingService {
     // });
   }
 
-  async setLocalAttributes(client: RtmClient, name) {
+  async setLocalAttributes(client: RtmClient, name, isuserpresentimg?) {
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent).toString();
     console.log(isMobile, 'isMobile');
     await client.setLocalUserAttributes({
@@ -142,7 +141,7 @@ export class MessagingService {
       .sendMessage({ text: message })
       .then(() => {
         /* Your code for handling events, such as a channel message-send success. */
-        console.log("test");
+        console.log("sendMessageChannel");
       })
       .catch(error => {
         /* Your code for handling events, such as a channel message-send failure. */
@@ -163,7 +162,6 @@ export class MessagingService {
 
   rtmChannelSendMessage(action)
   {
-    // console.log('rtmChannelSendMessage', action);
 
     let msg;
     switch(action)
@@ -171,7 +169,7 @@ export class MessagingService {
 
       case 'ping':
         msg=JSON.stringify({"action":"ping"});
-        //console.log('Ping');
+
       break;
 
     }

@@ -10,7 +10,9 @@
       <!-- <img  id="local-image" class="ui large image" src="../assets/images/image.png" style="  width: 200px;
       height: 200px;"> -->
     <div id="local-player" class="player"></div>
+    <div class="screen" *ngIf="this.stream.isScreenShared == true" id="screens">
 
+    </div>
       <!-- <video id="local-video" class="ui large image"  autoplay></video> -->
       <p>{{userName}}</p>
       <h4 class="ui center aligned header" style="margin:0;">
@@ -27,18 +29,24 @@
       height: 200px;"> -->
       <div id="{{ 'remote-playerlist' + i.uid}}" class="ui centered medium image" style="  width: 200px;
       height: 200px;">{{i.name}}</div>
-<p></p>
+
     </div>
   </div>
+
 
   <div>
     <button (click)="channelMsg()">Send message in channel</button>
     <button (click)="peertopeer()">Send One to One message</button>
 
     <button (click)="rtmclientChannelLogout()">leave Channel</button>
+    <button (click)="share()"> share </button>
   </div>
 
 </div>
+
+
+
+
 
 
 

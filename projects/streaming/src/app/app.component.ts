@@ -5,18 +5,15 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'streaming';
   hide = true;
-  constructor(private router: Router, public common: CommonService){
+  constructor(private router: Router, public common: CommonService) {}
+  open(value) {
 
-  }
-  open(value){
-this.common.id = value;
     this.router.navigate([`/staging/${value}`]);
     this.hide = false;
-
   }
 }

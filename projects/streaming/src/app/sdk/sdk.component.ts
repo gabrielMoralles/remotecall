@@ -47,67 +47,34 @@ export class SdkComponent implements OnInit {
 
   }
 
-  // async startCall() {
-  //   if (this.userName) {
-  //     const uid = this.generateUid();
-  //     const rtcDetails = await this.generateTokenAndUid(uid);
-  //     // rtm
-  //     await this.rtmUserLogin(uid);
-
-  //     // rtc
-  //     this.stream.createRTCClient();
-  //     this.stream.agoraServerEvents(this.stream.rtc);
-  //     await this.stream.localUser(rtcDetails.token, uid);
-
-  //     // this.hideBtns = false;
-  //   }
-  //   else {
-  //     alert('Enter name to start call');
-  //   }
-  // }
-
-// rtc token
-  // async generateTokenAndUid(uid) {
-  //   // https://test-agora.herokuapp.com/access_token?channel=test&uid=1234
-  //   let url = 'https://test-agora.herokuapp.com/access_token?';
-  //   const opts = { params: new HttpParams({ fromString: "channel=test&uid=" + uid }) };
-  //   const data = await this.api.getRequest(url, opts.params).toPromise();
-  //   return { 'uid': uid, token: data['token'] }
-
-  // }
-
-  // async generateRtmTokenAndUid(uid) {
-  //   // https://sharp-pouncing-grass.glitch.me/rtmToken?account=1234
-  //   let url = 'https://sharp-pouncing-grass.glitch.me/rtmToken?';
-  //   const opts = { params: new HttpParams({ fromString: "account=" + uid }) };
-  //   const data = await this.api.getRequest(url, opts.params).toPromise();
-  //   return { 'uid': uid, token: data['key'] }
-
-  // }
-
-  // generateUid() {
-  //   const length = 5;
-  //   const randomNo = (Math.floor(Math.pow(10, length - 1) + Math.random() * 9 * Math.pow(10, length - 1)));
-  //   return randomNo;
-  // }
 
 
-  // async rtmUserLogin(uid) {
+  async rtclogin(uid){
+        const rtcDetails = await this.common.generateTokenAndUid(uid);
+        this.stream.rtcscreenshare.client =  this.stream.createRTCClient();
+        // await this.stream.setRole( this.stream.rtcscreenshare.client, 'host')
+      this.stream.agoraServerEvents(this.stream.rtc, this.common.uid1, this.common.uid2);
+      return {t: rtcDetails.token, uid}
+  }
+
+  
+
+  async rtmUserLogin() {
 
 
+    const uid= this.common.generateUid();
+    this.message.rtmclient = this.message.createRTMClient();
 
-  //   this.message.rtmclient = this.message.createRTMClient();
+    // this.message.channel = this.message.createRtmChannel(this.message.rtmclient);
+    const rtmDetails = await this.common.generateRtmTokenAndUid(uid);
 
-  //   this.message.channel = this.message.createRtmChannel(this.message.rtmclient);
-  //   const rtmDetails = await this.generateRtmTokenAndUid(uid);
-
-  //   await this.message.signalLogin(this.message.rtmclient, rtmDetails.token, uid.toString());
-  //   await this.message.joinchannel(this.message.channel);
-  //   await this.message.setLocalAttributes(this.message.rtmclient, this.userName)
-  //   this.message.RTMevents(this.message.rtmclient);
-  //   this.message.receiveChannelMessage(this.message.channel, this.message.rtmclient);
-
-  // }
+    await this.message.signalLogin(this.message.rtmclient, rtmDetails.token, uid.toString());
+    // await this.message.joinchannel(this.message.channel);
+    await this.message.setLocalAttributes(this.message.rtmclient, this.userName, {'isPresenting':"1"})
+    this.message.RTMevents(this.message.rtmclient);
+    // this.message.receiveChannelMessage(this.message.channel, this.message.rtmclient);
+    return uid;
+  }
 
   peertopeer() {
     this.message.sendOneToOneMessage(this.message.rtmclient, this.stream.remoteUsers[0].uid.toString())
@@ -122,8 +89,28 @@ export class SdkComponent implements OnInit {
   async rtmclientChannelLogout() {
     await this.stream.leaveCall();
     this.message.leaveChannel(this.message.rtmclient, this.message.channel);
-    // this.userName = '';
   }
 
+  async share()
+  {
+  
+   this.stream.presentingId  = await this.rtmUserLogin(); //Storing information of Share screen.
+   const f=  await this.rtclogin(this.stream.presentingId)
+   this.stream.isScreenShared=true;
+   await this.stream.fqs(f);
 
+              // if(this.dataService.presenting==0 || this.dataService.presenting==this.dataService.rtcShare.uid)
+          
+              // //Presenting
+              // this.dataService.addPresentorInfo(this.dataService.rtcShare.uid);
+     
+              // this.rtcService.sharingEventHandler(this.dataService.rtcShare);
+
+     
+
+  }
+
+  async ngOnDestroy(){
+   await this.rtmclientChannelLogout();
+  }
 }
