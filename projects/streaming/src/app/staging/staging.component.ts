@@ -62,10 +62,10 @@ export class StagingComponent implements OnInit {
       // await this.rtmUserLogin(uid);
 
       // rtc
-      this.stream.rtc.client = this.stream.createRTCClient();
+      this.stream.rtc.client = this.stream.createRTCClient('host');
       this.stream.agoraServerEvents(this.stream.rtc);
       this.router.navigate([`/user/${this.urlId}`]);
-      await this.stream.localUser(rtcDetails.token, uid);
+      await this.stream.localUser(rtcDetails.token, uid, 'host', this.stream.rtc);
 
       this.message.sendMessageChannel(this.message.channel, 'ping');
 

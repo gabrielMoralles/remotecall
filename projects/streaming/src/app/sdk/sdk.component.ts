@@ -51,7 +51,7 @@ export class SdkComponent implements OnInit {
 
   async rtclogin(uid){
         const rtcDetails = await this.common.generateTokenAndUid(uid);
-        this.stream.rtcscreenshare.client =  this.stream.createRTCClient();
+        this.stream.rtcscreenshare.client =  this.stream.createRTCClient('host');
         // await this.stream.setRole( this.stream.rtcscreenshare.client, 'host')
       this.stream.agoraServerEvents(this.stream.rtc, this.common.uid1, this.common.uid2);
       return {t: rtcDetails.token, uid}
@@ -113,4 +113,22 @@ export class SdkComponent implements OnInit {
   async ngOnDestroy(){
    await this.rtmclientChannelLogout();
   }
+
+
+  
+ 
+
+  async mute() {
+    this.stream.rtc.localAudioTrack.setEnabled(false);
+  }
+
+  unmute() {
+    this.stream.rtc.localAudioTrack.setEnabled(true);
+  }
+
+
+
+
+
+
 }

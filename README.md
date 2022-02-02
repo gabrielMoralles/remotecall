@@ -83,3 +83,14 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 Todo-
       Agora on angular project with  Angular Universal SSR 
 ng add @nguniversal/express-engine@next
+
+npm install agora-rtc-sdk-ng --save
+
+http://localhost:5000/user/2
+http://localhost:5000/user/1
+http://localhost:5000/live
+
+https://angulardevelopment.github.io/agora-live-streaming-app/
+
+ng build --prod --baseHref="https://angulardevelopment.github.io/agora-live-streaming-app/"
+

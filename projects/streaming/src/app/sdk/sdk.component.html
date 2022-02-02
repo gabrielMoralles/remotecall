@@ -1,4 +1,7 @@
 
+<div class="container-fluid banner">
+  <p class="banner-text">Video Call</p>
+</div>
 <div class="ui container">
   <h1 class="ui header">Simple Agora Video App</h1>
   <hr>
@@ -10,6 +13,10 @@
       <!-- <img  id="local-image" class="ui large image" src="../assets/images/image.png" style="  width: 200px;
       height: 200px;"> -->
     <div id="local-player" class="player"></div>
+    <div>
+      <button (click)="mute()" class="btn btn-live btn-sm">mute</button>
+      <button (click)="unmute()" class="btn btn-live btn-sm">unmute</button>
+    </div>
     <div class="screen" *ngIf="this.stream.isScreenShared == true" id="screens">
 
     </div>
@@ -43,6 +50,14 @@
   </div>
 
 </div>
+
+
+
+
+
+
+
+
 
 
 

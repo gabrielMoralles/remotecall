@@ -3,6 +3,8 @@ import { SdkComponent } from './sdk/sdk.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { GenerateTokenComponent } from './generate-token/generate-token.component';
+import { FlexibleClassroomComponent } from './flexible-classroom/flexible-classroom.component';
+import { LiveComponent } from './live/live.component';
 
 const routes: Routes = [
   {
@@ -16,6 +18,14 @@ const routes: Routes = [
   {
     path: 'tokengenerate',
     component: GenerateTokenComponent,
+  },
+  {
+    path: 'classroom',
+    component: FlexibleClassroomComponent,
+  },
+  {
+    path: 'live',
+    component: LiveComponent,
   }
 ];
 

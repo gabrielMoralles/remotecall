@@ -13,6 +13,13 @@ export class StreamService {
     localAudioTrack: null,
     localVideoTrack: null,
   };
+  rtcLiveUser: IRtc = {
+    // For the local client.
+    client: null,
+    // For the local audio and video tracks.
+    localAudioTrack: null,
+    localVideoTrack: null,
+  };
   rtcscreenshare = {
     // For the local client.
     client: null,
@@ -22,7 +29,7 @@ export class StreamService {
     localScreenTrack: null,
     uid: null
   };
-
+  // liveUsersList = [];
   options = {
     appId: "48b158ccc64343cf9973a8f5df311f2a",  // set your appid here
     channel: "test", // Set the channel name.
@@ -36,13 +43,19 @@ export class StreamService {
 
   constructor() { }
   // private common: CommonService
-  createRTCClient() {
+  createRTCClient(type) {
     //  return AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
-    return AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+    // return AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
 // create client instances for camera (client) and screen share (screenClient)
 // var client = AgoraRTC.createClient({mode: 'rtc', codec: "h264"}); // h264 better detail at a higher motion
 // var screenClient = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'}); // use the vp8 for better detail in low motion
     // this.rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" , role: 'audience'});
+    if (type == 'live') {
+      return AgoraRTC.createClient({ mode: 'live', codec: 'vp8' });
+
+    } else {
+      return AgoraRTC.createClient({ mode: 'rtc', codec: 'h264' });
+    }
   }
   // comment it if you don't want virtual camera
   async switchCamera(label, localTracks) {
@@ -52,9 +65,14 @@ export class StreamService {
   }
 
   // To join a call with tracks (video or audio)
-  async localUser(token, uuid) {
-    const uid = await this.rtc.client.join(this.options.appId, this.options.channel,
+  async localUser(token, uuid, type, rtc) {
+    if (type == 'live') {
+      await rtc.client.setClientRole('audience');
+    }
+    const uid = await rtc.client.join(this.options.appId, this.options.channel,
       token, uuid);
+    if (type != 'live') {
+
     // Create an audio track from the audio sampled by a microphone.
     this.rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
     // Create a video track from the video captured by a camera.
@@ -67,9 +85,10 @@ export class StreamService {
     // this.rtc.localAudioTrack.play();
     this.rtc.localVideoTrack.play("local-player");
     // channel for other users to subscribe to it.
-    await this.rtc.client.publish([this.rtc.localAudioTrack, this.rtc.localVideoTrack]);
+    await rtc.client.publish([this.rtc.localAudioTrack, this.rtc.localVideoTrack]);
   }
-
+  }
+  
   async fqs ( f) {
     try {
       this.rtcscreenshare.localScreenTrack = await this.playStream();
@@ -133,6 +152,8 @@ export class StreamService {
 
       this.remoteUsers.push({ 'uid': +id });
       this.updateUserInfo.next(id);
+      // this.liveUsersList.push({ uid: +id });
+
       }
       console.log("user-joined", user, this.remoteUsers, 'event1');
     });
@@ -223,7 +244,7 @@ export class StreamService {
     console.log(this.rtc.client.uid, 'uid');
     console.log(this.rtc.client.getListeners('ee'));
 
-    const clientStats = this.rtc.client.getRTCStats();
+    const clientStats = this.rtc.client.getRTCStats(); // checkCount
     const clientStatsList = [
       { description: "Number of users in channel", value: clientStats.UserCount, unit: "" },
       { description: "Duration in channel", value: clientStats.Duration, unit: "s" },
@@ -316,6 +337,65 @@ export class StreamService {
       }
   
     }
+
+
+  
+
+
+  
+
+  
+
+  
+  
+    CoHost(){
+      const channelMediaConfig = AgoraRTC.createChannelMediaRelayConfiguration();
+  // Set the source channel information.
+  channelMediaConfig.setSrcChannelInfo({
+   channelName: "srcChannel",
+   uid: 0,
+   token: "yourSrcToken",
+  })
+  // Set the destination channel information. You can set a maximum of four destination channels.
+  channelMediaConfig.addDestChannelInfo({
+   channelName: "destChannel1",
+   uid: 123,
+   token: "yourDestToken",
+  })
+  
+  return channelMediaConfig;
+  
+    }
+  
+    ghf(channelMediaConfig){
+      this.rtc.client.startChannelMediaRelay(channelMediaConfig).then(() => {
+        console.log(`startChannelMediaRelay success`);
+      }).catch(e => {
+        console.log(`startChannelMediaRelay failed`, e);
+      })
+    }
+  
+    gvy(channelMediaConfig){
+      // Remove a destination channel.
+  channelMediaConfig.removeDestChannelInfo("destChannel1")
+  // Update the configurations of the media stream relay.
+  this.rtc.client.updateChannelMediaRelay(channelMediaConfig).then(() => {
+    console.log("updateChannelMediaRelay success");
+  }).catch(e => {
+    console.log("updateChannelMediaRelay failed", e);
+  })
+    }
+  
+    ghv(){
+      this.rtc.client.stopChannelMediaRelay().then(() => {
+        console.log("stop media relay success");
+      }).catch(e => {
+        console.log("stop media relay failed", e);
+      })
+    }
+
+  
+  
 
 }
 export interface IUser {

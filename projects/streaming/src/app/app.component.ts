@@ -12,8 +12,12 @@ export class AppComponent {
   hide = true;
   constructor(private router: Router, public common: CommonService) {}
   open(value) {
-
+    if (value == 3) {
+      this.router.navigate([`/live`]);
+      this.hide = false;
+    } else {
     this.router.navigate([`/staging/${value}`]);
     this.hide = false;
+    }
   }
 }
