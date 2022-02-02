@@ -9,18 +9,15 @@ import { Subject } from 'rxjs';
   providedIn: 'root',
 })
 export class CommonService {
-  uid1;
-  uid2;
-  id1;
-  id2;
-
+  uid1: number;
+  uid2: number;
   name1 = 't1';
   name2 = 't2';
-  pong: Subject<any> = new Subject<any>();
+  newUserJoined: Subject<any> = new Subject<any>();
   // public message: MessagingService,
   constructor(public stream: StreamService, public api: ApiService) {}
-// rtc token
-  async generateTokenAndUid(uid) {
+  // rtc token
+  async generateTokenAndUid(uid: number) {
     // https://test-agora.herokuapp.com/access_token?channel=test&uid=1234
     let url = 'https://test-agora.herokuapp.com/access_token?';
     const opts = {
@@ -30,7 +27,7 @@ export class CommonService {
     return { uid: uid, token: data['token'] };
   }
 
-  async generateRtmTokenAndUid(uid) {
+  async generateRtmTokenAndUid(uid: number) {
     // https://sharp-pouncing-grass.glitch.me/rtmToken?account=1234
     let url = 'https://sharp-pouncing-grass.glitch.me/rtmToken?';
     const opts = { params: new HttpParams({ fromString: 'account=' + uid }) };
@@ -38,15 +35,13 @@ export class CommonService {
     return { uid: uid, token: data['key'] };
   }
 
-  async generateRtmTokenAndUid2(uid) {
+  async generateRtmTokenAndUid2(uid: string) {
     // https://sharp-pouncing-grass.glitch.me/rtmToken?account=1234
     let url = 'https://darkened-coffee-chicory.glitch.me/rtmToken?';
     const opts = { params: new HttpParams({ fromString: 'account=' + uid }) };
     const data = await this.api.getRequest(url, opts.params).toPromise();
     return { uid: uid, token: data['key'] };
   }
-
-  
 
   generateUid() {
     const length = 5;
@@ -56,7 +51,7 @@ export class CommonService {
     return randomNo;
   }
 
-  pongUserInfo(peerId) {
-    this.pong.next({ peerId });
+  getNewUserInfo(peerId: string) {
+    this.newUserJoined.next({ peerId });
   }
 }

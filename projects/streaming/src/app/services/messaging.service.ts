@@ -1,25 +1,28 @@
 import { CommonService } from './common.service';
 import { Injectable } from '@angular/core';
 
-import AgoraRTM, { RtmChannel, RtmClient, RtmMessage } from "agora-rtm-sdk";
+import AgoraRTM, { RtmChannel, RtmClient, RtmMessage } from 'agora-rtm-sdk';
+import { rtmUser } from '../models';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class MessagingService {
   rtmclient: RtmClient;
   channel: RtmChannel;
-  rtmToken;
-  constructor(private common: CommonService) { }
+
+  constructor(private common: CommonService) {}
 
   // pass your appid in createInstance
   createRTMClient() {
-    const client = AgoraRTM.createInstance('48b158ccc64343cf9973a8f5df311f2a');
+    const client = AgoraRTM.createInstance('48b158ccc64343cf9973a8f5df311f2a', {
+      enableLogUpload: false,
+    });
     return client;
   }
 
   async signalLogin(client: RtmClient, token: string, uid: string) {
-    await client.login({ token, uid })
+    await client.login({ token, uid });
     // .then(() => {
     //   console.log('AgoraRTM client login success');
     // }).catch(err => {
@@ -28,17 +31,18 @@ export class MessagingService {
   }
 
   async signalLogout(client: RtmClient) {
-    await client.logout()
+    await client.logout();
   }
 
-  RTMevents(client: RtmClient) {
-    client.on("ConnectionStateChanged", (newState, reason) => {
+  rtmEvents(client: RtmClient) {
+    client.on('ConnectionStateChanged', (newState, reason) => {
       console.log(
-        "on connection state changed to " + newState + " reason: " + reason
+        'on connection state changed to ' + newState + ' reason: ' + reason
       );
     });
 
-    client.on('MessageFromPeer', (text, peerId) => { // text: text of the received message; peerId: User ID of the sender.
+    client.on('MessageFromPeer', (text, peerId) => {
+      // text: text of the received message; peerId: User ID of the sender.
       /* Your code for handling the event of receiving a peer-to-peer message. */
 
       this.recievedMessage(text, peerId);
@@ -46,59 +50,59 @@ export class MessagingService {
     client.on('PeersOnlineStatusChanged', (status) => {
       console.log('PeersOnlineStatusChanged ', status);
     });
-
   }
 
   recievedMessage(text: RtmMessage, peerId: string) {
-    console.log(text, peerId, 'MessageFromPeer')
-    if (text.messageType === "TEXT") {
+    console.log(text, peerId, 'MessageFromPeer');
+    if (text.messageType === 'TEXT') {
       this.setCurrentMessage({ message: text.text, user: peerId });
     }
   }
 
   receiveChannelMessage(channel: RtmChannel, client: RtmClient) {
-    channel.on('ChannelMessage', (text, senderId, messagePros) => { // text: text of the received channel message; senderId: user ID of the sender.
+    channel.on('ChannelMessage', (text, senderId, messagePros) => {
+      // text: text of the received channel message; senderId: user ID of the sender.
       /* Your code for handling events, such as receiving a channel message. */
       this.handleMessageReceived(text, senderId, messagePros, client);
     });
-    channel.on('MemberJoined', memberId => {
+    channel.on('MemberJoined', (memberId) => {
       console.log(memberId, 'MemberJoined');
+    });
 
-    })
-
-    channel.on('MemberLeft', memberId => {
+    channel.on('MemberLeft', (memberId) => {
       console.log('MemberLeft', memberId);
-
     });
   }
   // used to handle channel message
-  async handleMessageReceived(text: RtmMessage, senderId: string, messagePros, client: RtmClient) {
+  async handleMessageReceived(
+    text: RtmMessage,
+    senderId: string,
+    messagePros,
+    client: RtmClient
+  ) {
     const user = await client.getUserAttributes(senderId); // senderId means uid getUserInfo
     console.log(text, senderId, messagePros, user, 'channelmsg');
-    if (text.messageType === "TEXT") {
-      if (text.text == "ping") {
-        this.common.pongUserInfo(senderId);
-
+    if (text.messageType === 'TEXT') {
+      if (text.text == 'ping') {
+        this.common.getNewUserInfo(senderId);
       } else {
         const newMessageData = { user, message: text.text };
         this.setCurrentMessage(newMessageData);
       }
-
     }
   }
 
-  setCurrentMessage(newMessageData) {
-    console.log(newMessageData, 'setCurrentMessage');
+  setCurrentMessage(newMessageData: rtmUser) {
+    console.log(newMessageData, 'Message');
   }
 
-
-  sendOneToOneMessage(client: RtmClient, uid) {
+  sendOneToOneMessage(client: RtmClient, uid: string) {
     client
       .sendMessageToPeer(
-        { text: "test peer message" }, // An RtmMessage object.
+        { text: 'test peer message' }, // An RtmMessage object.
         uid // The user ID of the remote user.
       )
-      .then(sendResult => {
+      .then((sendResult) => {
         if (sendResult.hasPeerReceived) {
           console.log(sendResult, 'sendMessageToPeer');
 
@@ -107,19 +111,18 @@ export class MessagingService {
           /* Your code for handling the event that the message is received by the server but the remote user cannot be reached. */
         }
       })
-      .catch(error => {
+      .catch((error) => {
         /* Your code for handling the event of a message send failure. */
       });
   }
 
   createRtmChannel(client: RtmClient) {
-    const channel = client.createChannel("test");
+    const channel = client.createChannel('test');
     return channel;
   }
 
   async joinchannel(channel: RtmChannel) {
-    await channel
-      .join()
+    await channel.join();
     // .then(() => {
     //   /* Your code for handling the event of a join-channel success. */
     // })
@@ -128,30 +131,30 @@ export class MessagingService {
     // });
   }
 
-  async setLocalAttributes(client: RtmClient, name, isuserpresentimg?) {
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent).toString();
+  async setLocalAttributes(client: RtmClient, name: string, isUserPresenting?) {
+    const isMobile = /iPhone|iPad|iPod|Android/i
+      .test(navigator.userAgent)
+      .toString();
     console.log(isMobile, 'isMobile');
     await client.setLocalUserAttributes({
-      name, isMobile
+      name,
+      isMobile,
     });
   }
 
-  sendMessageChannel(channel: RtmChannel, message) {
+  sendMessageChannel(channel: RtmChannel, message: string) {
     channel
       .sendMessage({ text: message })
       .then(() => {
         /* Your code for handling events, such as a channel message-send success. */
-        console.log("sendMessageChannel");
+        console.log('sendMessageChannel');
       })
-      .catch(error => {
+      .catch((error) => {
         /* Your code for handling events, such as a channel message-send failure. */
       });
   }
 
-
-
   async leaveChannel(client: RtmClient, channel: RtmChannel) {
-
     if (channel) {
       await channel.leave();
     }
@@ -160,54 +163,45 @@ export class MessagingService {
     }
   }
 
-  rtmChannelSendMessage(action)
-  {
-
+  rtmChannelSendMessage(action) {
     let msg;
-    switch(action)
-    {
-
+    switch (action) {
       case 'ping':
-        msg=JSON.stringify({"action":"ping"});
+        msg = JSON.stringify({ action: 'ping' });
 
-      break;
-
+        break;
     }
 
     return msg;
-
   }
-  // async addUpdateUserAttribute(client: RtmClient, attribute) {
-  //   await client.addOrUpdateLocalUserAttributes(attribute);
-  // }
+  async addUpdateUserAttribute(client: RtmClient, attribute) {
+    await client.addOrUpdateLocalUserAttributes(attribute);
+  }
 
-  // setChannelInfo(client: RtmClient, attribute, option, channel) {
-  //   const result = client.setChannelAttributes(channel, attribute, option);
-  // }
+  setChannelInfo(client: RtmClient, attribute, option, channel) {
+    const result = client.setChannelAttributes(channel, attribute, option);
+  }
 
-  // addOrUpdateChannelAttributes(client: RtmClient, attribute, option, channel) {
-  //   const res = client.addOrUpdateChannelAttributes(channel, attribute, option);
-  // }
+  addOrUpdateChannelAttributes(client: RtmClient, attribute, option, channel) {
+    const res = client.addOrUpdateChannelAttributes(channel, attribute, option);
+  }
 
-  // getChannelAttributes(client: RtmClient, channel) {
-  //   const res = client.getChannelAttributes(channel)
-  // }
+  getChannelAttributes(client: RtmClient, channel) {
+    const res = client.getChannelAttributes(channel);
+  }
 
+  getRTMUserStatus(client: RtmClient, uidArray) {
+    client
+      .subscribePeersOnlineStatus(uidArray)
+      .then(() => {
+        console.log('subscribeStatus');
+      })
+      .catch((err) => {
+        console.log('subscribeStatus failure', err);
+      });
+  }
 
-  // getRTMUserStatus(client: RtmClient, uidArray) {
-
-  //   client.subscribePeersOnlineStatus(uidArray).then(() => {
-  //     console.log('subscribeStatus');
-  //   }).catch(err => {
-  //     console.log('subscribeStatus failure', err);
-  //   });
-
-  // }
-
-  // async getRTMUserOnlineStatus(client: RtmClient, uids) {
-  //   const status = await client.queryPeersOnlineStatus(uids)
-
-
-  // }
-
+  async getRTMUserOnlineStatus(client: RtmClient, uids) {
+    const status = await client.queryPeersOnlineStatus(uids);
+  }
 }

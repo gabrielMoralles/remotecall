@@ -2,11 +2,17 @@ import AgoraRTC, { IAgoraRTCClient, LiveStreamingTranscodingConfig, ICameraVideo
 
 
 export interface IUser {
-  uid: number;
+  uid?: number;
   name?: string;
+  token?: string;
 }
 export interface IRtc {
   client: IAgoraRTCClient;
   localAudioTrack: IMicrophoneAudioTrack;
   localVideoTrack: ICameraVideoTrack;
+}
+
+export interface rtmUser {
+  message: string;
+  user: any;
 }

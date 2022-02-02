@@ -35,12 +35,16 @@ export class StagingComponent implements OnInit {
     }
 
     this.subscriptions.push(
-      this.common.pong.subscribe(async (data) => {
+      this.common.newUserJoined.subscribe(async (data) => {
         if (data.peerId) {
-          const user = await this.message.rtmclient.getUserAttributes(
-            data.peerId.toString()
-          ); // senderId means uid getUserInfo
-          console.log(data, user, 'pong');
+          try {
+            const user = await this.message.rtmclient.getUserAttributes(
+              data.peerId.toString()
+            ); // senderId means uid getUserInfo
+            console.log(data, user, 'userinfo');
+          } catch (error) {
+            console.log(error);
+          }
         }
       })
     );
@@ -50,53 +54,68 @@ export class StagingComponent implements OnInit {
     return this.urlId == '1' ? this.common.uid1 : this.common.uid2;
   }
   async ngOnInit(): Promise<void> {
-    await this.rtmUserLogin(this.check());
-  }
-
-  async startCall() {
-    if (this.userName) {
-      // const uid = this.common.generateUid();
-      const uid = this.check();
-      const rtcDetails = await this.common.generateTokenAndUid(uid);
-      // rtm
-      // await this.rtmUserLogin(uid);
-
-      // rtc
-      this.stream.rtc.client = this.stream.createRTCClient('host');
-      this.stream.agoraServerEvents(this.stream.rtc);
-      this.router.navigate([`/user/${this.urlId}`]);
-      await this.stream.localUser(rtcDetails.token, uid, 'host', this.stream.rtc);
-
-      this.message.sendMessageChannel(this.message.channel, 'ping');
-
-      // this.hideBtns = false;
-    } else {
-      alert('Enter name to start call');
+    try {
+      await this.rtmUserLogin(this.check());
+    } catch (error) {
+      console.log(error);
     }
   }
 
-  async rtmUserLogin(uid) {
-    this.message.rtmclient = this.message.createRTMClient();
+  async startCall() {
+    try {
+      if (this.userName) {
+        // const uid = this.common.generateUid();
+        const uid = this.check();
+        const rtcDetails = await this.common.generateTokenAndUid(uid);
 
-    this.message.channel = this.message.createRtmChannel(
-      this.message.rtmclient
-    );
-    const rtmDetails = await this.common.generateRtmTokenAndUid(uid);
+        // rtc
+        this.stream.rtc.client = this.stream.createRTCClient('host');
+        this.stream.agoraServerEvents(this.stream.rtc);
+        this.router.navigate([`/user/${this.urlId}`]);
+        await this.stream.localUser(
+          rtcDetails.token,
+          uid,
+          'host',
+          this.stream.rtc
+        );
 
-    await this.message.signalLogin(
-      this.message.rtmclient,
-      rtmDetails.token,
-      uid.toString()
-    );
-    await this.message.joinchannel(this.message.channel);
-    await this.message.setLocalAttributes(
-      this.message.rtmclient,
-      this.userName
-    );
-    this.message.RTMevents(this.message.rtmclient);
-    this.message.receiveChannelMessage(
-      this.message.channel,
-      this.message.rtmclient
-    );
+        this.message.sendMessageChannel(this.message.channel, 'ping');
+
+        // this.hideBtns = false;
+      } else {
+        alert('Enter name to start call');
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async rtmUserLogin(uid: number) {
+    try {
+      this.message.rtmclient = this.message.createRTMClient();
+
+      this.message.channel = this.message.createRtmChannel(
+        this.message.rtmclient
+      );
+      const rtmDetails = await this.common.generateRtmTokenAndUid(uid);
+
+      await this.message.signalLogin(
+        this.message.rtmclient,
+        rtmDetails.token,
+        uid.toString()
+      );
+      await this.message.joinchannel(this.message.channel);
+      await this.message.setLocalAttributes(
+        this.message.rtmclient,
+        this.userName
+      );
+      this.message.rtmEvents(this.message.rtmclient);
+      this.message.receiveChannelMessage(
+        this.message.channel,
+        this.message.rtmclient
+      );
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
