@@ -67,7 +67,7 @@ export class StagingComponent implements OnInit {
         // const uid = this.common.generateUid();
         const uid = this.check();
         const rtcDetails = await this.common.generateTokenAndUid(uid);
-
+        this.stream.rtc.token = rtcDetails.token;
         // rtc
         this.stream.rtc.client = this.stream.createRTCClient('host');
         this.stream.agoraServerEvents(this.stream.rtc);

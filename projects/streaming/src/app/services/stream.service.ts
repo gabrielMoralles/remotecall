@@ -23,6 +23,10 @@ export class StreamService {
     // For the local audio and video tracks.
     localAudioTrack: null,
     localVideoTrack: null,
+    token: '',
+    checkSpeakingInterval: null,
+    audio: true,
+    video: true
   };
   rtcLiveUser: IRtc = {
     // For the local client.
@@ -87,7 +91,13 @@ export class StreamService {
     );
     if (type == 'host') {
       // Create an audio track from the audio sampled by a microphone.
-      this.rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack();
+      this.rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack(
+        // Custom Audio Manipulation
+        {encoderConfig: {
+          sampleRate: 48000,
+          stereo: true,
+          bitrate: 128,
+        }});
       // Create a video track from the video captured by a camera.
       this.rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack({
         encoderConfig: '120p',
@@ -103,6 +113,12 @@ export class StreamService {
         this.rtc.localVideoTrack,
       ]);
     }
+  }
+
+  async ownAudioSource(rtc){ 
+  const media = await navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+let audioTrack = media.getAudioTracks()[0]
+rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack: audioTrack });
   }
 
   async shareScreen(user: IUser) {
@@ -178,12 +194,13 @@ export class StreamService {
     rtc.client.on('channel-media-relay-event', (user) => {
       console.log('channel-media-relay-event', user, 'event2');
     });
-    rtc.client.on('user-left', (user) => {
-      console.log('user-left', user, 'event3');
-    });
     rtc.client.on('channel-media-relay-state', (user) => {
       console.log('channel-media-relay-state', user, 'event4');
     });
+    rtc.client.on('user-left', (user) => {
+      console.log('user-left', user, 'event3');
+    });
+
     rtc.client.on('crypt-error', (user) => {
       console.log('crypt-error', user, 'event5');
     });
@@ -217,21 +234,27 @@ export class StreamService {
     rtc.client.on('token-privilege-will-expire', (user) => {
       console.log('token-privilege-will-expire', user, 'event15');
     });
+    rtc.client.enableAudioVolumeIndicator();
     rtc.client.on('volume-indicator', (user) => {
-      console.log('volume-indicator', user, 'event16');
+      console.log('volume-indicator', user, 'volume');
     });
     rtc.client.on('track-ended', () => {
       console.log('track-ended', 'event17');
     });
   }
   // To leave channel-
-  async leaveCall() {
+  async leaveCall(rtc: IRtc) {
     // Destroy the local audio and video tracks.
-    this.rtc.localAudioTrack != undefined ?? this.rtc.localAudioTrack.close();
-    this.rtc.localVideoTrack != undefined ?? this.rtc.localVideoTrack.close();
+    if (rtc.localAudioTrack != undefined) {
+      rtc.localAudioTrack.close();
+    }
+    if (rtc.localVideoTrack != undefined) {
+      rtc.localVideoTrack.close();
+    }
+
     // Traverse all remote users.
-    if (this.rtc.client != undefined) {
-      this.rtc.client.remoteUsers.forEach((user) => {
+    if (rtc.client != undefined) {
+      rtc.client.remoteUsers.forEach((user) => {
         // Destroy the dynamically created DIV container.
         const playerContainer = document.getElementById(
           'remote-playerlist' + user.uid.toString()
@@ -239,7 +262,7 @@ export class StreamService {
         playerContainer && playerContainer.remove();
       });
       // Leave the channel.
-      await this.rtc.client.leave();
+      await rtc.client.leave();
     }
 
     // for (trackName in localTracks) {
@@ -429,6 +452,7 @@ export class StreamService {
 
   // To play any default audio
   // async playAudio() {
+    // pass a socket stream of audioBuffer packets to AgoraRTC.createBufferSourceAudioTrack
   //   const audioFileTrack = await AgoraRTC.createBufferSourceAudioTrack({
   //     source: "https://web-demos-static.agora.io/agora/smlt.flac",
   //   });
@@ -453,25 +477,18 @@ export class StreamService {
     }
   }
 
-  CoHost() {
+
+  // ChannelMediaRelay (Co-hosting across channels) in Web Streaming
+  // use "media stream relay" for live streaming to allow users to co-host.
+  // To enable media stream relay, contact support@agora.io
+  // from the host - any host in a live-broadcast channel
+  initiateMediaStreamRelay(source, dest) {
     const channelMediaConfig = AgoraRTC.createChannelMediaRelayConfiguration();
     // Set the source channel information.
-    channelMediaConfig.setSrcChannelInfo({
-      channelName: 'srcChannel',
-      uid: 0,
-      token: 'yourSrcToken',
-    });
+    channelMediaConfig.setSrcChannelInfo(source);
     // Set the destination channel information. You can set a maximum of four destination channels.
-    channelMediaConfig.addDestChannelInfo({
-      channelName: 'destChannel1',
-      uid: 123,
-      token: 'yourDestToken',
-    });
+    channelMediaConfig.addDestChannelInfo(dest);
 
-    return channelMediaConfig;
-  }
-
-  ghf(channelMediaConfig) {
     this.rtc.client
       .startChannelMediaRelay(channelMediaConfig)
       .then(() => {
@@ -482,7 +499,8 @@ export class StreamService {
       });
   }
 
-  gvy(channelMediaConfig) {
+  // from the host
+  removeStreamRelay(channelMediaConfig) {
     // Remove a destination channel.
     channelMediaConfig.removeDestChannelInfo('destChannel1');
     // Update the configurations of the media stream relay.
@@ -496,7 +514,7 @@ export class StreamService {
       });
   }
 
-  ghv() {
+  stopMediaStreamRelay() {
     this.rtc.client
       .stopChannelMediaRelay()
       .then(() => {

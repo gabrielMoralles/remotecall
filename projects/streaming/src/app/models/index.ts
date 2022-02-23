@@ -10,6 +10,10 @@ export interface IRtc {
   client: IAgoraRTCClient;
   localAudioTrack: IMicrophoneAudioTrack;
   localVideoTrack: ICameraVideoTrack;
+  token?: string;
+  checkSpeakingInterval?: any;
+  audio?: boolean,
+  video?: boolean
 }
 
 export interface rtmUser {

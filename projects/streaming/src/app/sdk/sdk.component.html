@@ -46,10 +46,12 @@
     <button (click)="peertopeer()">Send One to One message</button>
 
     <button (click)="rtmclientChannelLogout()">leave Channel</button>
-    <button (click)="share()"> share </button>
+    <button (click)="shareScreen()"> share </button>
   </div>
 
 </div>
+<input type="number" placeholder="Volume" (change)="setVol($event, stream.rtc.localAudioTrack)">
+<button (click)="cohost()">cohost</button>
 
 
 

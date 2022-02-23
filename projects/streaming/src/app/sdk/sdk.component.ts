@@ -1,7 +1,7 @@
 import { CommonService } from './../services/common.service';
 import { HttpParams } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { MessagingService } from '../services/messaging.service';
 import { StreamService } from '../services/stream.service';
@@ -14,12 +14,14 @@ import { StreamService } from '../services/stream.service';
 export class SdkComponent implements OnInit {
   userName: string;
   urlId: string;
+  speaking = true;
   constructor(
     public stream: StreamService,
     public api: ApiService,
     private common: CommonService,
     public message: MessagingService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private router: Router
   ) {
     this.urlId = this.route.snapshot.params['id'];
     if (this.urlId == '1') {
@@ -48,13 +50,16 @@ export class SdkComponent implements OnInit {
     });
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.checkUserSpeakingAlert();
+  }
 
   async rtclogin(uid: number) {
     try {
       const rtcDetails = await this.common.generateTokenAndUid(uid);
       this.stream.rtcscreenshare.client = this.stream.createRTCClient('host');
       // await this.stream.setRole( this.stream.rtcscreenshare.client, 'host')
+      
       this.stream.agoraServerEvents(
         this.stream.rtc,
         this.common.uid1,
@@ -66,7 +71,7 @@ export class SdkComponent implements OnInit {
     }
   }
 
-  // for screeen share
+  // rtm login for screen share
   async rtmUserLogin() {
     try {
       const uid = this.common.generateUid();
@@ -74,7 +79,7 @@ export class SdkComponent implements OnInit {
 
       // this.message.channel = this.message.createRtmChannel(this.message.rtmclient);
       const rtmDetails = await this.common.generateRtmTokenAndUid(uid);
-
+ 
       await this.message.signalLogin(
         this.message.rtmclient,
         rtmDetails.token,
@@ -110,7 +115,7 @@ export class SdkComponent implements OnInit {
 
   async rtmclientChannelLogout() {
     try {
-      await this.stream.leaveCall();
+      await this.stream.leaveCall(this.stream.rtc);
       await this.message.leaveChannel(
         this.message.rtmclient,
         this.message.channel
@@ -118,9 +123,11 @@ export class SdkComponent implements OnInit {
     } catch (error) {
       console.log(error);
     }
+    this.router.navigate([`/staging/${this.urlId}`]);
+
   }
 
-  async share() {
+  async shareScreen() {
     try {
       this.stream.presentingId = await this.rtmUserLogin(); //Storing information of Share screen.
       const user = await this.rtclogin(this.stream.presentingId);
@@ -129,13 +136,6 @@ export class SdkComponent implements OnInit {
     } catch (error) {
       console.log(error);
     }
-
-    // if(this.dataService.presenting==0 || this.dataService.presenting==this.dataService.rtcShare.uid)
-
-    // //Presenting
-    // this.dataService.addPresentorInfo(this.dataService.rtcShare.uid);
-
-    // this.rtcService.sharingEventHandler(this.dataService.rtcShare);
   }
 
   async ngOnDestroy() {
@@ -144,9 +144,149 @@ export class SdkComponent implements OnInit {
 
   async mute() {
     this.stream.rtc.localAudioTrack.setEnabled(false);
+    this.stream.rtc.audio = false;
+    this.speaking = false;
+    this.checkUserSpeakingAlert();
   }
 
   unmute() {
     this.stream.rtc.localAudioTrack.setEnabled(true);
+    this.stream.rtc.audio = true;
+
+  }
+
+  cohost(){
+    const s= {
+      channelName: 'test',
+      uid: this.common.uid1,
+      token: this.stream.rtc.token,
+    }
+    const d = {
+      channelName: 'test',
+      uid: 123,
+      token: 'yourDestToken',
+    }
+    this.stream.initiateMediaStreamRelay(s, d);
+  }
+
+  audioVisualizer(){
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
+
+      let audioContext = new AudioContext();
+ 
+      let analyser = audioContext.createAnalyser();
+ 
+      let microphone = audioContext.createMediaStreamSource(stream);
+ 
+      let javascriptNode = audioContext.createScriptProcessor(2048, 1, 1);
+ 
+       analyser.smoothingTimeConstant = 0.8;
+ 
+       analyser.fftSize = 1024;
+ 
+       microphone.connect(analyser);
+ 
+       analyser.connect(javascriptNode);
+ 
+       javascriptNode.connect(audioContext.destination);
+ 
+       javascriptNode.onaudioprocess = function() {
+ 
+           var array = new Uint8Array(analyser.frequencyBinCount);
+ 
+           analyser.getByteFrequencyData(array);
+ 
+           var values = 0;
+ 
+    
+ 
+           var length = array.length;
+ 
+           for (var i = 0; i < length; i++) {
+ 
+             values += (array[i]);
+ 
+           }
+ 
+    
+ 
+           var average = values / length;
+ 
+    
+ 
+           if(Math.round(average)>15)
+ 
+           {
+ 
+             console.log(Math.round(average));
+ 
+             // document.getElementById("lvl").innerHTML = Math.round(average)-10;
+ 
+           }
+ 
+        
+ 
+       }
+ 
+       })
+ 
+       .catch(function(err) {
+ 
+         /* handle the error */
+ 
+     }); 
+  }
+
+  // if user is speaking show alert you are on mute
+  checkUserSpeakingAlert(){
+    const startAudioCheck = async () => {
+      const mediaStream = await navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+      const audioContext = new AudioContext();
+      const mediaStreamAudioSourceNode = audioContext.createMediaStreamSource(mediaStream);
+      const analyserNode = audioContext.createAnalyser();
+      mediaStreamAudioSourceNode.connect(analyserNode);
+      const pcmData = new Float32Array(analyserNode.fftSize);
+
+      const checkAudio = () => {
+        analyserNode.getFloatTimeDomainData(pcmData);
+        let sumSquares = 0.0;
+        for (const amplitude of pcmData) { sumSquares += amplitude * amplitude; }
+        let vol = Math.sqrt(sumSquares / pcmData.length)
+
+
+        
+        if (vol > 0.05 && !this.speaking) {
+          // setSpeaking(true)
+          console.log('user speaking');
+          this.speaking = true;
+          setTimeout(() => { 
+            // setSpeaking(false) 
+          console.log('user not speaking');
+          this.speaking = false;
+
+          }, 2000)
+        }
+      };
+  
+      if (this.stream.rtc.audio === false) {
+        this.stream.rtc.checkSpeakingInterval = setInterval(checkAudio, 100)
+      }
+      else {
+        clearInterval(this.stream.rtc.checkSpeakingInterval)
+      }
+    }
+    if (this.stream.rtc.client) {
+      startAudioCheck()
+    }
+  //   return () => {
+  //     // eslint-disable-next-line
+      clearInterval(this.stream.rtc.checkSpeakingInterval)
+  //   }
+  //   // eslint-disable-next-line
+  // }, [user.audio])
+  }
+
+  setVol(e, user){
+  let vol = parseInt(e.target.value); !isNaN(vol) && vol >= 0 && vol <= 1000 && (user.audioTrack.setVolume(parseInt(e.target.value))) 
   }
 }
