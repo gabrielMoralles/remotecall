@@ -41,6 +41,10 @@ audio/video tracks play
 recording
 call analytics (They offer a restful API for analytics.)
 peer to peer call(engagement between one to one)
+listen peer user Decline event 
+ 
+ send RTMP stream to agora server which can take the input and convert it to HLS and play it in a video player which can be viewed on web by anyone
+
 Record a channel ( audio only)
 Take a screenshot in the video call - https://davidwalsh.name/browser-camera
 Cloud recording
@@ -54,6 +58,9 @@ send desktop sound also with screen share
 count audience in a channel
 kick user from channel   https://docs.agora.io/en/Interactive%20Broadcast/faq/kick_user
 you can also use rest api to kick user from channel
+https://api.agora.io/dev/v2/apps/{appid}/channels/{cname}/accounts/{account}/properties
+https://docs.agora.io/en/live-streaming/rtc_channel_management_restfulapi?platform=RESTful#online-channel-statistics-query
+
 save audio recording from a video call
 Pause and play recodring
 play recorded streams on the web from AWS S3?
@@ -93,7 +100,7 @@ Each agenda item has a timer
 Polling
 
 Agora flexible classroom  flexible-classroom-sdk 1.1.5
-
+ end the class when teacher left the flexible classroom
 
 check bundle size agora
 agora builder is using which database ?
@@ -177,6 +184,8 @@ if i have a video uploaded on AWS S3 and have its video url. This video is avail
 for call invitation  use agora rtm sdk
 save logs on console.agora or server rather that showing on client side console.
 create a Proximity based Spatial voice chat for our multiplayer game based on WEB .
+
+use  web component for video call functionality
 # Topics
 angular webrtc video-conferencing agoraio agora-rtc-sdk-ng agora-rtm-sdk video 
 
@@ -222,7 +231,7 @@ https://videocall.agora.io/
 
 
 
-
+agora on-premises recording using nodejs
 
 https://docs.agora.io/en/cloud-recording/product_cloud_recording?platform=RESTful
 
@@ -393,7 +402,7 @@ https://github.com/AgoraIO-Community/ContentContributorGuides
 
 https://www.agora.io/en/blog/building-a-raise-your-hand-feature-for-live-streams-using-the-agora-web-sdk/
 React: https://www.agora.io/en/blog/adding-admin-functionality-for-group-video-call-apps-in-react-js-and-agora/ 
-
+https://mohd4yousuf.medium.com/implement-basic-video-calling-in-react-using-agorawebsdk-ng-24b8920063f
 
 
 
@@ -408,6 +417,14 @@ SMS api like Twilio SMS service integrations
 https://github.com/AgoraIO-Community/agora-rtc-react
 
 https://www.agora.io/en/blog/agora-web-uikit-add-video-calling-or-live-streaming-to-your-website-in-minutes/    angular
+https://github.com/AgoraIO-Community/Web-React-UIKit/
 
 ngx-agora
 It is an enhanced implementation of the angular-agora-rtc package. These are the libraries that are not in much use nowadays.
+
+https://docs.agora.io/en/Agora%20Platform/firewall
+
+https://docs.agora.io/en/All/faq/call_invite_notification  for Callkeep, calls receiving notification
+
+
+Agora is a fully backed Communications Platform as a Service (CPaaS)

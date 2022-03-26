@@ -524,4 +524,18 @@ rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack
         console.log('stop media relay failed', e);
       });
   }
+
+  switchStream =  (client: IAgoraRTCClient, highOrLow: number, streamUid: number)=>{
+    if (highOrLow === 0) {
+      highOrLow = 1
+      console.log("Set to low");
+    }
+    else {
+      highOrLow = 0
+      console.log("Set to high");
+    }
+  
+    client.setRemoteVideoStreamType(streamUid, highOrLow);
+  }
+  
 }
