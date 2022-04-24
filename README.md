@@ -101,6 +101,9 @@ Polling
 
 Agora flexible classroom  flexible-classroom-sdk 1.1.5
  end the class when teacher left the flexible classroom
+ agora flexible classroom - chat module
+how to turn Whiteboard on or off while joining the classroom using Classroom SDK API Reference 
+https://docs.agora.io/en/agora-class/agora_class_turn_off_whiteboard?platform=Web
 
 check bundle size agora
 agora builder is using which database ?
@@ -145,7 +148,7 @@ check if the meeting ended or not.
 method to check if a user tries to join a meeting created by someone else and the meeting has already ended? Do we check the channel for this? what approach we can use here.
 build a "watch party" application.
 check if the remote user's camera is on or off ?
-remove any user from call
+remove any user from call -  remove remote user by uid from live streaming ???
 
 voip functionality using agora
 get total users watching stream - rtc rtm
@@ -169,7 +172,7 @@ minBitrate in sdk 4
 Is there any way to switch to wide-angle and zoom lens on an iPhone (iOS / WebKit)?AgoraRTC.getCameras() only returns a Front Camera and a Back Camera.What about the other two back cameras
 switch front and back camera while using application on mobile device?
 screen share tabs only implementation
-implement - multiple scenes like obs
+implement - multiple scenes like obs (multi camera feed using agora)
 way for agora io to detect when user mutes audio by using shortcut key on the laptop keyboard
 
 display list of remote users video by using this npm package: https://www.npmjs.com/package/ng-image-slider 
@@ -198,6 +201,8 @@ ng build --prod --baseHref="https://angulardevelopment.github.io/agora-live-stre
 
 # Awesome Things You Can Do with Agora.io platform
 suppose you have 500 peoples as audience and you want them to raise hand if they want to be host and then only allow them to take on the role of co-host.
+
+enable users to join as co-host in live stream like we do on insta
 https://agoraio-community.github.io/AgoraWebSDK-NG/docs/en/media_relay
 https://docs.agora.io/en/Interactive%20Broadcast/media_relay_web_ng?platform=Web
 
@@ -281,7 +286,7 @@ community@agora.io
 william.du@agora.io
 ekaansh@agora.io
 https://agora-ticket.agora.io/v1
-
+https://docs.agora.io/en/Agora%20Platform/ticket
 
 
 
