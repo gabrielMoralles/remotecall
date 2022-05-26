@@ -33,7 +33,7 @@ Sample app to join/leave a channel.
 * set the video parameters.
 Agora on angular project with  Angular Universal SSR  - ng add @nguniversal/express-engine@next
 show the audio status (Mute/Unmute) and video status (yes/no) of every attendee in the video call.
-annotation and the breakout rooms feature
+annotation and the breakout rooms feature like Zoom’s Breakout room
 authenticating users with tokens and  redirect them out of the page once the token has expired. 
 image beautify
 Screen share
@@ -433,3 +433,6 @@ https://docs.agora.io/en/All/faq/call_invite_notification  for Callkeep, calls r
 
 
 Agora is a fully backed Communications Platform as a Service (CPaaS)
+
+
+ allow a Remote Desktop control via Agora web.
