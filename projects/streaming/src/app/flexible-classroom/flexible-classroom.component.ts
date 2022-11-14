@@ -8,46 +8,46 @@ declare var AgoraEduSDK;
 })
 export class FlexibleClassroomComponent implements OnInit {
 
-  constructor(    private common: CommonService) {
+  constructor(private common: CommonService) {
 
-   }
+  }
 
   ngOnInit(): void {
     // this.dggsd();
     // this.dfvadf();
   }
 
- dggsd(){
-  AgoraEduSDK.config({
-    // Here pass in the Agora App ID you have got
-    appId: "4de74d230b2349458cd138aa2677bc0a",
-  })
-  AgoraEduSDK.launch(
-    document.querySelector("#root1"), {
-      // Here pass in the RTM token you have generated
-      rtmToken: "0064de74d230b2349458cd138aa2677bc0aIACVLmsCj58TZDvxQuyDcru2Zm/pEZiheejMHqhTUl0YFKPg45sAAAAAEAAl61SE/CvwYQEA6AOM6O5h",
-      // The user ID must be the same as the one you used for generating the RTM token
-      userUuid: "1234",
-      userName: "teacher",
-      roomUuid: "321",
-      roomName: "demo-class",
-      roleType: 1,
-      roomType: 0,
-      pretest: true,
-      language: "en",
-      startTime: new Date().getTime(),
-      duration: 60 * 30,
-      courseWareList: [],
-      listener: (evt) => {
-        console.log("evt", evt)
-      }
-    }
-  )
-  }
+  // dggsd() {
+  //   AgoraEduSDK.config({
+  //     // Here pass in the Agora App ID you have got
+  //     appId: "4de74d230b2349458cd138aa2677bc0a",
+  //   })
+  //   AgoraEduSDK.launch(
+  //     document.querySelector("#root1"), {
+  //     // Here pass in the RTM token you have generated
+  //     rtmToken: "0064de74d230b2349458cd138aa2677bc0aIACVLmsCj58TZDvxQuyDcru2Zm/pEZiheejMHqhTUl0YFKPg45sAAAAAEAAl61SE/CvwYQEA6AOM6O5h",
+  //     // The user ID must be the same as the one you used for generating the RTM token
+  //     userUuid: "1234",
+  //     userName: "teacher",
+  //     roomUuid: "321",
+  //     roomName: "demo-class",
+  //     roleType: 1,
+  //     roomType: 0,
+  //     pretest: true,
+  //     language: "en",
+  //     startTime: new Date().getTime(),
+  //     duration: 60 * 30,
+  //     courseWareList: [],
+  //     listener: (evt) => {
+  //       console.log("evt", evt)
+  //     }
+  //   }
+  //   )
+  // }
 
-  async dfvadf (){
-    const rtmDetails = await this.common.generateRtmTokenAndUid2('123456');
-console.log(rtmDetails, 'rtmDetailsrtmDetails');
+  // async dfvadf() {
+  //   const rtmDetails = await this.common.generateRtmTokenAndUid2('123456');
+  //   console.log(rtmDetails, 'rtmDetailsrtmDetails');
 
-  }
+  // }
 }

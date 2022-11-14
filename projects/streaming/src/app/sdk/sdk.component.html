@@ -46,13 +46,20 @@
     <button (click)="peertopeer()">Send One to One message</button>
 
     <button (click)="rtmclientChannelLogout()">leave Channel</button>
-    <button (click)="shareScreen()"> share </button>
+    <button (click)="shareScreen()"> share Screen</button>
   </div>
 
 </div>
-<input type="number" placeholder="Volume" (change)="setVol($event, stream.rtc.localAudioTrack)">
+<input type="number" placeholder="Volume" (change)="setVol($event)">
 <button (click)="cohost()">cohost</button>
 
+<select name="" id="" [(ngModel)]="selectedValue" (change)="switchAudio()">
+  <option *ngFor="let obj of externalaudiodevices" [ngValue]="obj">{{obj.label}}</option>
+</select>
+
+<select name="" id="" [(ngModel)]="selectedValue" (change)="switchVideo()">
+  <option *ngFor="let obj of externalvideodevices" [ngValue]="obj">{{obj.label}}</option>
+</select>
 
 
 

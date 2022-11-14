@@ -10,14 +10,14 @@ import { Router } from '@angular/router';
 export class AppComponent {
   title = 'streaming';
   hide = true;
-  constructor(private router: Router, public common: CommonService) {}
+  constructor(private router: Router, public common: CommonService) { }
   open(value: number) {
     if (value == 3) {
       this.router.navigate([`/live`]);
       this.hide = false;
     } else {
-    this.router.navigate([`/staging/${value}`]);
-    this.hide = false;
+      this.router.navigate([`/staging/${value}`]);
+      this.hide = false;
     }
   }
 }

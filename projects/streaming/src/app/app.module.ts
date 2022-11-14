@@ -6,7 +6,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SdkComponent } from './sdk/sdk.component';
 import { StagingComponent } from './staging/staging.component';
-import { GenerateTokenComponent } from './generate-token/generate-token.component';
+
 import { FlexibleClassroomComponent } from './flexible-classroom/flexible-classroom.component';
 import { LiveComponent } from './live/live.component';
 
@@ -15,7 +15,6 @@ import { LiveComponent } from './live/live.component';
     AppComponent,
     SdkComponent,
     StagingComponent,
-    GenerateTokenComponent,
     FlexibleClassroomComponent,
     LiveComponent
   ],

@@ -13,9 +13,9 @@ export class LiveComponent implements OnInit {
     public stream: StreamService,
     public api: ApiService,
     public common: CommonService
-  ) {}
+  ) { }
 
-  ngOnInit(): void {}
+  ngOnInit(): void { }
 
   async joinLiveCall() {
     try {

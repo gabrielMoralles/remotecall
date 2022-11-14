@@ -46,7 +46,7 @@ export class StreamService {
   };
   // liveUsersList = [];
   options = {
-    appId: '48b158ccc64343cf9973a8f5df311f2a', // set your appid here
+    appId: '48b158ccc64343cf9973a8f5df311f2a', // set your appid here b1a776384fe24b58a43030c834b8f7dd
     channel: 'test', // Set the channel name.
     // token: '', // Pass a token if your project enables the App Certificate.
     // uid: null
@@ -56,28 +56,27 @@ export class StreamService {
   isScreenShared = false;
   presentingId = 0;
 
-  constructor() {}
-  // private common: CommonService
-  createRTCClient(type: string) {
-    //  return AgoraRTC.createClient({ mode: "rtc", codec: "h264" });
-    // return AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+  constructor() { }
     // create client instances for camera (client) and screen share (screenClient)
-    // var client = AgoraRTC.createClient({mode: 'rtc', codec: "h264"}); // h264 better detail at a higher motion
-    // var screenClient = AgoraRTC.createClient({mode: 'rtc', codec: 'vp8'}); // use the vp8 for better detail in low motion
-    // this.rtc.client = AgoraRTC.createClient({ mode: "rtc", codec: "h264" , role: 'audience'});
+  createRTCClient(type: string) {
+    // h264- better detail at a higher motion
+    // use the vp8 for better detail in low motion
     if (type == 'live') {
       return AgoraRTC.createClient({ mode: 'live', codec: 'vp8' });
     } else {
       return AgoraRTC.createClient({ mode: 'rtc', codec: 'h264' });
     }
   }
-  // comment it if you don't want virtual camera
+  // To add virtual camera
   async switchCamera(label: string, localTracks: ICameraVideoTrack) {
-    let cams = await AgoraRTC.getCameras(); //  all cameras devices you can use
+    const cams = await this.getVideodevices();
     let currentCam = cams.find((cam) => cam.label === label);
     await localTracks.setDevice(currentCam.deviceId);
   }
-
+  async getVideodevices(){
+  let cams = await AgoraRTC.getCameras(); //  all cameras devices you can use
+  return cams;
+  }
   // To join a call with tracks (video or audio)
   async localUser(token: string, uuid: number, type: string, rtc: IRtc) {
     if (type == 'live') {
@@ -93,20 +92,25 @@ export class StreamService {
       // Create an audio track from the audio sampled by a microphone.
       this.rtc.localAudioTrack = await AgoraRTC.createMicrophoneAudioTrack(
         // Custom Audio Manipulation
-        {encoderConfig: {
-          sampleRate: 48000,
-          stereo: true,
-          bitrate: 128,
-        }});
+        {
+          encoderConfig: {
+            sampleRate: 48000,
+            stereo: true,
+            bitrate: 128,
+          }
+        });
       // Create a video track from the video captured by a camera.
       this.rtc.localVideoTrack = await AgoraRTC.createCameraVideoTrack({
         encoderConfig: '120p',
       });
-      // comment it if you want to use your camera
+
+      // if you want to use your camera
       // this.switchCamera('OBS Virtual Camera', this.rtc.localVideoTrack)
+
       // Publish the local audio and video tracks to the channel.
       // this.rtc.localAudioTrack.play();
       this.rtc.localVideoTrack.play('local-player');
+
       // channel for other users to subscribe to it.
       await rtc.client.publish([
         this.rtc.localAudioTrack,
@@ -115,10 +119,10 @@ export class StreamService {
     }
   }
 
-  async ownAudioSource(rtc){ 
-  const media = await navigator.mediaDevices.getUserMedia({ video: false, audio: true })
-let audioTrack = media.getAudioTracks()[0]
-rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack: audioTrack });
+  async ownAudioSource(rtc) {
+    const media = await navigator.mediaDevices.getUserMedia({ video: false, audio: true })
+    let audioTrack = media.getAudioTracks()[0]
+    rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack: audioTrack });
   }
 
   async shareScreen(user: IUser) {
@@ -152,6 +156,7 @@ rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack
     });
     return localScreenTrack;
   }
+
   agoraServerEvents(rtc: IRtc, uid1?: number, uid2?: number) {
     // 2 used
     rtc.client.on('user-published', async (user, mediaType) => {
@@ -175,6 +180,7 @@ rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack
         }
       }
     });
+    
     rtc.client.on('user-unpublished', (user) => {
       console.log(user, 'user-unpublished');
     });
@@ -234,13 +240,14 @@ rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack
     rtc.client.on('token-privilege-will-expire', (user) => {
       console.log('token-privilege-will-expire', user, 'event15');
     });
-    rtc.client.enableAudioVolumeIndicator();
+    // rtc.client.enableAudioVolumeIndicator();
     rtc.client.on('volume-indicator', (user) => {
       console.log('volume-indicator', user, 'volume');
     });
     rtc.client.on('track-ended', () => {
       console.log('track-ended', 'event17');
     });
+
   }
   // To leave channel-
   async leaveCall(rtc: IRtc) {
@@ -276,10 +283,6 @@ rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack
     //   remoteUsers = {}; // clear remote users and player views
     //   localTracks = {};
   }
-
-  // stopAudio() {
-  //   this.rtc.localAudioTrack.stop();
-  // }
 
   clientProp() {
     console.log(this.rtc.client.channelName, 'channelName');
@@ -334,6 +337,7 @@ rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack
     ];
     console.log(clientStatsList, 'clientStatsList');
   }
+
   trackProp() {
     console.log(this.rtc.localAudioTrack.isPlaying, 'isPlaying');
     console.log(this.rtc.localAudioTrack.trackMediaType, 'trackMediaType');
@@ -429,14 +433,17 @@ rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack
     ];
     console.log(localVideoData, 'localVideoData');
   }
+
   // To temporary off the video
   async videoOff() {
     this.rtc.localVideoTrack.setEnabled(false);
   }
+
   // To on the video
   videoOn() {
     this.rtc.localVideoTrack.setEnabled(true);
   }
+
   // async audioVideo() {
   //   // To Capture and audio and video at one time
 
@@ -452,7 +459,7 @@ rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack
 
   // To play any default audio
   // async playAudio() {
-    // pass a socket stream of audioBuffer packets to AgoraRTC.createBufferSourceAudioTrack
+  // pass a socket stream of audioBuffer packets to AgoraRTC.createBufferSourceAudioTrack
   //   const audioFileTrack = await AgoraRTC.createBufferSourceAudioTrack({
   //     source: "https://web-demos-static.agora.io/agora/smlt.flac",
   //   });
@@ -463,11 +470,32 @@ rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack
 
   // To switch audio-
   async switchMicrophone(label: string, localTracks: IMicrophoneAudioTrack) {
-    let mics = await AgoraRTC.getMicrophones(); // all microphones devices you can use
+    const mics = await this.allaudiodevices();
     let currentMic = mics.find((mic) => mic.label === label);
     await localTracks.setDevice(currentMic.deviceId);
   }
+  async allaudiodevices(){
 
+  let mics = await AgoraRTC.getMicrophones(); // all microphones devices you can use
+  return mics
+  }
+  async switchMicrophone2(val, localTracks) {
+    let mics = await AgoraRTC.getDevices();
+  if(val.kind == 'audiooutput') {
+        let currentMic = mics.find(mic => mic.label === val.label);
+    await localTracks.setPlaybackDevice (currentMic.deviceId);
+  } else {
+        let currentMic2 = mics.find(mic => mic.label === val.label);
+    await localTracks.setDevice(currentMic2.deviceId);
+  }
+      }
+
+   
+    
+        async alldevices(){
+          return await AgoraRTC.getDevices()   
+        }
+        
   //Set Role
   async setRole(rtc: IRtc, role: ClientRole) {
     try {
@@ -476,7 +504,6 @@ rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack
       console.log(error, 'setRole error');
     }
   }
-
 
   // ChannelMediaRelay (Co-hosting across channels) in Web Streaming
   // use "media stream relay" for live streaming to allow users to co-host.
@@ -525,7 +552,7 @@ rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack
       });
   }
 
-  switchStream =  (client: IAgoraRTCClient, highOrLow: number, streamUid: number)=>{
+  switchStream = (client: IAgoraRTCClient, highOrLow: number, streamUid: number) => {
     if (highOrLow === 0) {
       highOrLow = 1
       console.log("Set to low");
@@ -534,8 +561,8 @@ rtc.current.localAudioTrack = AgoraRTC.createCustomAudioTrack({ mediaStreamTrack
       highOrLow = 0
       console.log("Set to high");
     }
-  
+
     client.setRemoteVideoStreamType(streamUid, highOrLow);
   }
-  
+
 }

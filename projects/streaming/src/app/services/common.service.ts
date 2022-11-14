@@ -15,7 +15,7 @@ export class CommonService {
   name2 = 't2';
   newUserJoined: Subject<any> = new Subject<any>();
   // public message: MessagingService,
-  constructor(public stream: StreamService, public api: ApiService) {}
+  constructor(public stream: StreamService, public api: ApiService) { }
   // rtc token
   async generateTokenAndUid(uid: number) {
     // https://test-agora.herokuapp.com/access_token?channel=test&uid=1234
@@ -35,13 +35,13 @@ export class CommonService {
     return { uid: uid, token: data['key'] };
   }
 
-  async generateRtmTokenAndUid2(uid: string) {
-    // https://sharp-pouncing-grass.glitch.me/rtmToken?account=1234
-    let url = 'https://darkened-coffee-chicory.glitch.me/rtmToken?';
-    const opts = { params: new HttpParams({ fromString: 'account=' + uid }) };
-    const data = await this.api.getRequest(url, opts.params).toPromise();
-    return { uid: uid, token: data['key'] };
-  }
+  // async generateRtmTokenAndUid2(uid: string) {
+  //   // https://sharp-pouncing-grass.glitch.me/rtmToken?account=1234
+  //   let url = 'https://darkened-coffee-chicory.glitch.me/rtmToken?';
+  //   const opts = { params: new HttpParams({ fromString: 'account=' + uid }) };
+  //   const data = await this.api.getRequest(url, opts.params).toPromise();
+  //   return { uid: uid, token: data['key'] };
+  // }
 
   generateUid() {
     const length = 5;

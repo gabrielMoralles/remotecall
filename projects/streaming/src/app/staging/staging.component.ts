@@ -5,6 +5,7 @@ import { ApiService } from './../services/api.service';
 import { StreamService } from './../services/stream.service';
 import { Component, OnInit } from '@angular/core';
 import { Subscription } from 'rxjs';
+import AgoraRTC from 'agora-rtc-sdk-ng';
 
 @Component({
   selector: 'app-staging',
@@ -14,7 +15,7 @@ import { Subscription } from 'rxjs';
 export class StagingComponent implements OnInit {
   hideBtns = true;
   userName = '';
-  urlId;
+  urlId: string;
   subscriptions: Subscription[] = [];
 
   constructor(
@@ -41,7 +42,7 @@ export class StagingComponent implements OnInit {
             const user = await this.message.rtmclient.getUserAttributes(
               data.peerId.toString()
             ); // senderId means uid getUserInfo
-            console.log(data, user, 'userinfo');
+            console.log(data, user, 'userinfo newUserJoined');
           } catch (error) {
             console.log(error);
           }
@@ -71,6 +72,7 @@ export class StagingComponent implements OnInit {
         // rtc
         this.stream.rtc.client = this.stream.createRTCClient('host');
         this.stream.agoraServerEvents(this.stream.rtc);
+        this.deviceToggle();
         this.router.navigate([`/user/${this.urlId}`]);
         await this.stream.localUser(
           rtcDetails.token,
@@ -81,7 +83,7 @@ export class StagingComponent implements OnInit {
 
         this.message.sendMessageChannel(this.message.channel, 'ping');
 
-        // this.hideBtns = false;
+        this.hideBtns = false;
       } else {
         alert('Enter name to start call');
       }
@@ -90,9 +92,32 @@ export class StagingComponent implements OnInit {
     }
   }
 
+  deviceToggle(){
+   
+      
+    AgoraRTC.onMicrophoneChanged = async (changedDevice) => {
+      // const externaldevices = await this.stream.alldevices();
+      console.log( changedDevice);
+      
+  }
+    AgoraRTC.onCameraChanged = async (changedDevice) => {
+
+      // const externaldevices = await this.stream.alldevices();
+      console.log( changedDevice);
+
+      if (changedDevice.state === "INACTIVE") {
+          const oldCamera = await AgoraRTC.getCameras();
+          oldCamera[0] && this.stream.rtc.localVideoTrack.setDevice(oldCamera[0].deviceId);
+        }
+    };
+
+      AgoraRTC.onPlaybackDeviceChanged = (info) => {
+        console.log("speaker changed!", info);
+      };
+    }
   async rtmUserLogin(uid: number) {
     try {
-      this.message.rtmclient = this.message.createRTMClient();
+      this.message.rtmclient = this.message.createRTMClient(this.stream.options.appId);
 
       this.message.channel = this.message.createRtmChannel(
         this.message.rtmclient

@@ -11,18 +11,23 @@ export class MessagingService {
   rtmclient: RtmClient;
   channel: RtmChannel;
 
-  constructor(private common: CommonService) {}
+  constructor(private common: CommonService) { }
 
   // pass your appid in createInstance
-  createRTMClient() {
-    const client = AgoraRTM.createInstance('48b158ccc64343cf9973a8f5df311f2a', {
+  createRTMClient(id) {
+    const client = AgoraRTM.createInstance(id, {
       enableLogUpload: false,
     });
     return client;
   }
 
   async signalLogin(client: RtmClient, token: string, uid: string) {
-    await client.login({ token, uid });
+    try {
+      await client.login({ token, uid });
+    } catch (error) {
+      console.log(error);   
+    }
+
     // .then(() => {
     //   console.log('AgoraRTM client login success');
     // }).catch(err => {
@@ -96,10 +101,10 @@ export class MessagingService {
     console.log(newMessageData, 'Message');
   }
 
-  sendOneToOneMessage(client: RtmClient, uid: string) {
+  sendOneToOneMessage(client: RtmClient, uid: string, text) {
     client
       .sendMessageToPeer(
-        { text: 'test peer message' }, // An RtmMessage object.
+        { text }, // An RtmMessage object.
         uid // The user ID of the remote user.
       )
       .then((sendResult) => {
@@ -122,7 +127,12 @@ export class MessagingService {
   }
 
   async joinchannel(channel: RtmChannel) {
-    await channel.join();
+    try {
+      await channel.join();
+    } catch (error) {
+      console.log(error);  
+    }
+
     // .then(() => {
     //   /* Your code for handling the event of a join-channel success. */
     // })
