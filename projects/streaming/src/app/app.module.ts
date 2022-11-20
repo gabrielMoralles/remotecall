@@ -9,6 +9,9 @@ import { StagingComponent } from './staging/staging.component';
 
 import { FlexibleClassroomComponent } from './flexible-classroom/flexible-classroom.component';
 import { LiveComponent } from './live/live.component';
+import { EndCallComponent } from './end-call/end-call.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 @NgModule({
   declarations: [
@@ -16,13 +19,16 @@ import { LiveComponent } from './live/live.component';
     SdkComponent,
     StagingComponent,
     FlexibleClassroomComponent,
-    LiveComponent
+    LiveComponent,
+    EndCallComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -44,6 +44,12 @@ export class StreamService {
     localScreenTrack: null,
     uid: null,
   };
+  name;
+  videoStatus = true;
+  audioStatus = false;
+  errorValue;
+  type;
+
   // liveUsersList = [];
   options = {
     appId: '48b158ccc64343cf9973a8f5df311f2a', // set your appid here b1a776384fe24b58a43030c834b8f7dd
@@ -565,4 +571,29 @@ export class StreamService {
     client.setRemoteVideoStreamType(streamUid, highOrLow);
   }
 
+  async videoUpdate() {
+    // this.videoStatus = flag;
+
+    if (this.videoStatus) {
+      this.videoStatus = false;
+    } else {
+      this.videoStatus = true;
+
+    }
+    await this.rtc.localVideoTrack.setEnabled(this.videoStatus);
+
+  }
+
+  async audioUpdate() {
+    // this.audioStatus = flag;
+
+    if (this.audioStatus) {
+      this.audioStatus = false;
+    } else {
+      this.audioStatus = true;
+
+    }
+    await this.rtc.localAudioTrack.setEnabled( this.audioStatus);
+
+  }
 }

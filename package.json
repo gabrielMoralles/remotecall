@@ -24,6 +24,7 @@
     "agora-access-token": "^2.0.4",
     "agora-rtc-sdk-ng": "^4.3.0",
     "agora-rtm-sdk": "^1.4.1-201",
+    "ngx-toastr": "^13.2.1",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

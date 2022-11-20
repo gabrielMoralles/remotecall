@@ -4,8 +4,11 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../services/api.service';
 import { MessagingService } from '../services/messaging.service';
-import { StreamService } from '../services/stream.service';
+// import { StreamService } from 'service';
 import AgoraRTC from 'agora-rtc-sdk-ng';
+import { ToastrService } from 'ngx-toastr';
+import { timer } from 'rxjs';
+import { StreamService } from '../services/stream.service';
 
 @Component({
   selector: 'app-sdk',
@@ -20,13 +23,17 @@ export class SdkComponent implements OnInit {
   externalaudiodevices;
   externalvideodevices;
 
+  second;
+  hours;
+  minutes;
   constructor(
     public stream: StreamService,
     public api: ApiService,
     private common: CommonService,
     public message: MessagingService,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {
     this.urlId = this.route.snapshot.params['id'];
     if (this.urlId == '1') {
@@ -60,6 +67,7 @@ export class SdkComponent implements OnInit {
   ngOnInit() {
     this.checkUserSpeakingAlert();
     this.getall();
+    this.time();
   }
 
   // used in screen share
@@ -123,19 +131,7 @@ export class SdkComponent implements OnInit {
     );
   }
 
-  async rtmclientChannelLogout() {
-    try {
-      await this.stream.leaveCall(this.stream.rtc);
-      await this.message.leaveChannel(
-        this.message.rtmclient,
-        this.message.channel
-      );
-    } catch (error) {
-      console.log(error);
-    }
-    this.router.navigate([`/staging/${this.urlId}`]);
 
-  }
 
   async shareScreen() {
     try {
@@ -323,5 +319,71 @@ console.log(this.selectedValue, '');
     const user = this.stream.rtc.localAudioTrack;
     let vol = parseInt(e.target.value); !isNaN(vol) && vol >= 0 && vol <= 1000 && (user.setVolume(parseInt(e.target.value)))
     console.log(e.target.value,vol, 'setVolume');
+  }
+
+  
+  async end() {
+    this.router.navigate(["endcall"]);
+
+    this.endMeet();
+    await this.stream.leaveCall(this.stream.rtc);
+    this.message.leaveChannel(this.message.rtmclient, this.message.channel);
+    // this.router.navigate(["endcall"]);
+  }
+
+  async rtmclientChannelLogout() {
+    try {
+      await this.stream.leaveCall(this.stream.rtc);
+      await this.message.leaveChannel(
+        this.message.rtmclient,
+        this.message.channel
+      );
+    } catch (error) {
+      console.log(error);
+    }
+    // this.router.navigate([`/staging/${this.urlId}`]);
+
+  }
+
+  endMeet() {
+    var hms = `${this.hours}:${this.minutes}:${this.second}`;   // your input string
+    var a = hms.split(':'); // split it at the colons
+
+    // minutes are worth 60 seconds. Hours are worth 60 minutes.
+    var seconds = (+a[0]) * 60 * 60 + (+a[1]) * 60 + (+a[2]);
+
+    let d = new Date;
+    let dformat = [d.getFullYear(), d.getMonth()+1,
+               d.getDate(),
+               ].join('-')+' '+
+              [d.getHours(),
+               d.getMinutes(),
+               d.getSeconds()].join(':');
+    const formData = new FormData();
+    // formData.append('short_url', this.activatedRoute.snapshot.params.id);
+    // formData.append('channel_id', this.stream.meetingDetail.channelName);
+    // formData.append('start_time',  dformat);
+    // formData.append('duration', seconds.toString());
+//     this.api.postCall('agora/save-time/', formData).subscribe((res)=>{
+
+// console.log(res, 'res');
+
+//     });
+  }
+
+
+  showSuccess() {
+    this.toastr.success('Hello world!', 'Toastr fun!');
+  }
+
+  time(){
+    this.second = timer(0, 1000);
+this.second.subscribe(t => {
+
+this.second = t % 60;
+   this.hours = Math.floor(t / 60 / 60);
+
+this.minutes = Math.floor(t / 60)
+})
   }
 }

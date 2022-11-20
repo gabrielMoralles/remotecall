@@ -5,6 +5,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { FlexibleClassroomComponent } from './flexible-classroom/flexible-classroom.component';
 import { LiveComponent } from './live/live.component';
+import { EndCallComponent } from './end-call/end-call.component';
 
 const routes: Routes = [
   {
@@ -22,6 +23,10 @@ const routes: Routes = [
   {
     path: 'live',
     component: LiveComponent,
+  },
+  {
+    path: 'endcall',
+    component: EndCallComponent,
   }
 ];
 

@@ -3,7 +3,7 @@ import { ActivatedRoute, ActivationStart, Router } from '@angular/router';
 import { MessagingService } from './../services/messaging.service';
 import { ApiService } from './../services/api.service';
 import { StreamService } from './../services/stream.service';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import AgoraRTC from 'agora-rtc-sdk-ng';
 
@@ -17,6 +17,10 @@ export class StagingComponent implements OnInit {
   userName = '';
   urlId: string;
   subscriptions: Subscription[] = [];
+  isVideoStreaming = true;
+  toggleCamera = true;
+  toggleAudio = true;
+  @ViewChild('streamVideo') video;
 
   constructor(
     public stream: StreamService,
@@ -143,4 +147,84 @@ export class StagingComponent implements OnInit {
       console.log(error);
     }
   }
+
+  setVideo(){
+
+    if(!this.stream.videoStatus)
+    {
+      this.toggleCamera=true;
+      this.stream.videoStatus=true;
+      this.isVideoStreaming=true;
+
+      this.openCamera();
+    }
+    else
+    {
+      this.stop();
+      this.toggleCamera=false;
+      this.stream.videoStatus=false;
+      this.isVideoStreaming=false;
+
+    }
+
+}
+
+
+async setAudio()
+{
+  if(!this.stream.audioStatus)
+  {
+    this.toggleAudio=true;
+    this.stream.audioStatus=true;
+
+  }
+  else
+  {
+    this.toggleAudio=false;
+    this.stream.audioStatus=false;
+
+
+  }
+}
+
+openCamera()
+{
+  navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+  .then((stream)=> {
+    if(this.toggleCamera)
+      this.isVideoStreaming=true;
+    else
+      this.isVideoStreaming=false;
+      this.video.nativeElement.srcObject = stream;
+      this.video.nativeElement.play();
+  })
+  .catch((err) =>{
+      console.log("An error occurred: " + err);
+      if(err=='NotAllowedError: Permission denied')
+      {
+        this.router.navigate(["error"]);
+        this.stream.errorValue = 'miccamera';
+      }
+  });
+}
+
+stop() {
+  if (this.video) {
+    const stream = this.video.nativeElement.srcObject;
+    if (stream) {
+      const tracks = stream.getTracks();
+
+      for (let i = 0; i < tracks.length; i++) {
+        const track = tracks[i];
+        track.stop();
+        track['enabled'] = false;
+
+      }
+    }
+
+
+    this.video.nativeElement.srcObject = null;
+  }
+
+}
 }
